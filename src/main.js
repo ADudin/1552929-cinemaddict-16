@@ -10,6 +10,7 @@ import {createShowMoreBtnTemplate} from './view/show-more-btn-view.js';
 import {createPopupTemplate} from './view/popup-view.js';
 import {createFilmsListTopRatedTemplate} from './view/films-list-top-rated.js';
 import {createFilmsListMostCommentedTemplate} from './view/films-list-most-commented.js';
+import {generateFilm} from './mock/film.js';
 
 const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
@@ -50,3 +51,7 @@ for (let i = 0; i < FILM_CARDS_NUMBER; i++) {
 }
 
 renderTemplate(filmsList, createShowMoreBtnTemplate(), RenderPosition.BEFOREEND);
+
+const film = generateFilm();
+
+console.log(film);
