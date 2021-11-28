@@ -1,11 +1,5 @@
 import dayjs from 'dayjs';
-
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a,b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
+import {getRandomInteger} from '../utils';
 
 const generateTitle = () => {
   const titles = [
@@ -288,7 +282,7 @@ export const generateComments = () => {
 
   for (let i = 0; i < commentsNumber; i++) {
     const comment = new Object();
-    comment.id = getRandomInteger(0, i);
+    comment.id = i + 1;
     comment.text = generateTextFragment();
     comment.emotion = generateEmotions();
     comment.author = generateCommentAuthorName();
@@ -299,6 +293,18 @@ export const generateComments = () => {
 
   return comments;
 };
+
+/*
+export const COMMENTS_NUMBER = getRandomInteger(0, 5);
+
+export const generateComments = () => ({
+  id: getRandomInteger(1, COMMENTS_NUMBER),
+  message: generateTextFragment(),
+  emotion: generateEmotions(),
+  author: generateCommentAuthorName(),
+  date: generateDate(),
+});
+*/
 
 export const generateFilm = () => {
   const isWatched = generateIsWatched();

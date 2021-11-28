@@ -1,58 +1,25 @@
-import {generateComments} from '../mock/film';
-
-const getRuntimeFromMinutes = (mins) => {
-  const HOURS_ABB = 'h ';
-  const MINUTES_ABB = 'm';
-  const hours = Math.trunc(mins / 60);
-  const minutes = mins % 60;
-
-  if (mins <= 60) {
-
-    return minutes + MINUTES_ABB;
-  }
-
-  if (minutes === 0) {
-
-    return hours + HOURS_ABB;
-  }
-
-  return hours + HOURS_ABB + minutes + MINUTES_ABB;
-};
-
-const getGenreFromGenres = (genresArray) => {
-  const genre = genresArray[0];
-
-  return genre;
-};
-
-const getShortDescription = (text) => {
-  const LIMIT = 140;
-  const description = text;
-  const etc = '...';
-
-  if (description.length <= LIMIT) {
-
-    return description;
-  }
-
-  return description.substring(0, LIMIT - 1) + etc;
-};
-
-const checkIsActiveClassName = (key) => {
-  const className = '';
-
-  if (key) {
-
-    return 'film-card__controls-item--active';
-  }
-
-  return className;
-};
+import {generateComments} from '../mock/film'; // delete
+import {
+  getRuntimeFromMinutes,
+  getShortDescription,
+  getFirstArrayElement,
+  checkIsActiveClassName
+} from '../utils';
 
 export const createFilmCardTemplate = (card) => {
-  const {poster, title, totalRating, release, runtime, genre, description, userDetails} = card;
+  const {
+    poster,
+    title,
+    totalRating,
+    release,
+    runtime,
+    genre,
+    description,
+    userDetails
+  } = card;
+
   const releaseYear = release.date.getFullYear();
-  const commentsArray = generateComments();
+  const commentsArray = generateComments(); //rewrite
   const commentsNumber = commentsArray.length;
   const watchlistClassName = userDetails.watchlist;
   const alreadyWatchedClassName = userDetails.alreadyWatched;
@@ -65,7 +32,7 @@ export const createFilmCardTemplate = (card) => {
       <p class="film-card__info">
         <span class="film-card__year">${releaseYear}</span>
         <span class="film-card__duration">${getRuntimeFromMinutes(runtime)}</span>
-        <span class="film-card__genre">${getGenreFromGenres(genre)}</span>
+        <span class="film-card__genre">${getFirstArrayElement(genre)}</span>
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${getShortDescription(description)}</p>

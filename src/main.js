@@ -10,7 +10,11 @@ import {createShowMoreBtnTemplate} from './view/show-more-btn-view.js';
 import {createPopupTemplate} from './view/popup-view.js';
 import {createFilmsListTopRatedTemplate} from './view/films-list-top-rated.js';
 import {createFilmsListMostCommentedTemplate} from './view/films-list-most-commented.js';
-import {generateFilm} from './mock/film.js';
+import {
+  generateFilm,
+  //generateComments,
+  //COMMENTS_NUMBER
+} from './mock/film.js';
 
 const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
@@ -21,7 +25,13 @@ const RenderPosition = {
 
 const FILM_CARDS_NUMBER = 20;
 
-const filmCards = Array.from ({length: FILM_CARDS_NUMBER}, generateFilm);
+const filmCards = Array.from({length: FILM_CARDS_NUMBER}, generateFilm);
+/*
+const filmComments = Array.from({length: COMMENTS_NUMBER}, generateComments);
+const getFilmComments = ({comments}) => (
+  filmComments.filter((element) => comments.includes(element.id))
+);
+*/
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -37,7 +47,6 @@ renderTemplate(siteMainElement, createSiteMenuTemplate(), RenderPosition.AFTERBE
 renderTemplate(siteHeaderElement, createUserProfileTemplate(), RenderPosition.BEFOREEND);
 //renderTemplate(siteMainElement, createStatisticTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(siteFooterElement, createFooterStatisticsTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(siteFooterElement, createPopupTemplate(), RenderPosition.AFTEREND);
 
 const filmsSection = siteMainElement.querySelector('.films');
 
@@ -54,8 +63,4 @@ for (let i = 0; i < FILM_CARDS_NUMBER; i++) {
 
 renderTemplate(filmsList, createShowMoreBtnTemplate(), RenderPosition.BEFOREEND);
 
-/*
-const film = generateFilm();
-
-console.log(film);
-*/
+renderTemplate(siteFooterElement, createPopupTemplate(filmCards[0], /*getFilmComments(filmCards[0])*/), RenderPosition.AFTEREND);
