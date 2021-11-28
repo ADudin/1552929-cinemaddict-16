@@ -19,7 +19,9 @@ const RenderPosition = {
   AFTEREND: 'afterend',
 };
 
-const FILM_CARDS_NUMBER = 5;
+const FILM_CARDS_NUMBER = 20;
+
+const filmCards = Array.from ({length: FILM_CARDS_NUMBER}, generateFilm);
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -47,11 +49,13 @@ const filmsList = filmsSection.querySelector('.films-list');
 const filmsListContainer = filmsList.querySelector('.films-list__container');
 
 for (let i = 0; i < FILM_CARDS_NUMBER; i++) {
-  renderTemplate(filmsListContainer, createFilmCardTemplate(), RenderPosition.AFTERBEGIN);
+  renderTemplate(filmsListContainer, createFilmCardTemplate(filmCards[i]), RenderPosition.AFTERBEGIN);
 }
 
 renderTemplate(filmsList, createShowMoreBtnTemplate(), RenderPosition.BEFOREEND);
 
+/*
 const film = generateFilm();
 
 console.log(film);
+*/

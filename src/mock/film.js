@@ -25,13 +25,13 @@ const generateTitle = () => {
 
 const generatePoster = () => {
   const posters = [
-    '../public/images/posters/made-for-each-other.png',
-    '../public/images/posters/popeye-meets-sinbad.png',
-    '../public/images/posters/sagebrush-trail.png',
-    '../public/images/posters/santa-claus-conquers-the-martians.png',
-    '../public/images/posters/the-dance-of-life.png',
-    '../public/images/posters/the-great-flamarion.png',
-    '../public/images/posters/the-man-with-the-golden-arm.png',
+    'made-for-each-other.png',
+    'popeye-meets-sinbad.png',
+    'sagebrush-trail.jpg',
+    'santa-claus-conquers-the-martians.jpg',
+    'the-dance-of-life.jpg',
+    'the-great-flamarion.jpg',
+    'the-man-with-the-golden-arm.jpg',
   ];
 
   const randomIndex = getRandomInteger(0, posters.length - 1);
@@ -242,22 +242,6 @@ const generateDescription = () => {
   return description.join(' ');
 };
 
-/*
-const generateShortDescription = () => {
-  const LIMIT = 140;
-  const description = generateDescription();
-  const etc = '...';
-
-  if (description.length <= LIMIT) {
-
-    return description;
-  } else {
-
-    return description.substring(0, LIMIT - 1) + etc;
-  }
-};
-*/
-
 const generateIsWatched = () => {
   const isWatched = Boolean(getRandomInteger(0, 1));
 
@@ -297,7 +281,7 @@ const generateDate = () => {
   return dayjs().add(minutesGap, 'minute').toDate();
 };
 
-const generateComments = () => {
+export const generateComments = () => {
   const comments = [];
   const MAX_COMMENTS_NUMBER = 5;
   const commentsNumber = getRandomInteger(0, MAX_COMMENTS_NUMBER);
@@ -315,22 +299,6 @@ const generateComments = () => {
 
   return comments;
 };
-
-/*
-export const generateFilms = () => {
-  const films = [];
-  const FILMS_NUMBER = 10;
-
-  for (let i = 0; i < FILMS_NUMBER; i++) {
-
-    };
-
-    films.push(generateFilm());
-  }
-
-  return films;
-};
-*/
 
 export const generateFilm = () => {
   const isWatched = generateIsWatched();
@@ -352,15 +320,14 @@ export const generateFilm = () => {
     director: generateDirector(),
     writers: generateWriters(),
     actors: generateActors(),
+    ageRating: getRandomInteger(1, 18),
     release: {
       releaseCountry: generateCountry(),
       date: generateReleaseDate(),
     },
     runtime: generateRuntime(),
     genre: generateGenres(),
-    //genres: generateGenresElement(),
     description: generateDescription(),
-    //shortDescription: generateShortDescription(),
     userDetails: {
       watchlist: Boolean(getRandomInteger(0, 1)),
       alreadyWatched: isWatched,
