@@ -1,33 +1,25 @@
 import dayjs from 'dayjs';
 import {getRandomInteger} from '../utils';
+import {
+  titles,
+  posters,
+  directors,
+  writers,
+  actors,
+  countries,
+  genres,
+  textPieces,
+  emotions,
+  names
+} from '../consts';
 
 const generateTitle = () => {
-  const titles = [
-    'Made for Each Other',
-    'Popeye Meets Sinbad',
-    'Sagebrush Trial',
-    'Santa Claus Conquers the Martians',
-    'The Dance of Life',
-    'The Great Flamarion',
-    'The Man With the Golden Arm',
-  ];
-
   const randomIndex = getRandomInteger(0, titles.length - 1);
 
   return titles[randomIndex];
 };
 
 const generatePoster = () => {
-  const posters = [
-    'made-for-each-other.png',
-    'popeye-meets-sinbad.png',
-    'sagebrush-trail.jpg',
-    'santa-claus-conquers-the-martians.jpg',
-    'the-dance-of-life.jpg',
-    'the-great-flamarion.jpg',
-    'the-man-with-the-golden-arm.jpg',
-  ];
-
   const randomIndex = getRandomInteger(0, posters.length - 1);
 
   return posters[randomIndex];
@@ -43,16 +35,6 @@ const generateRatio = () => {
 };
 
 const generateDirector = () => {
-  const directors = [
-    'Steven Spielberg',
-    'Martin Scorsese',
-    'Alfred Hitchcock',
-    'Stanley Kubrick',
-    'Quentin Tarantino',
-    'Ridley Scott',
-    'Christopher Nolan',
-  ];
-
   const randomIndex = getRandomInteger(0, directors.length - 1);
 
   return directors[randomIndex];
@@ -63,21 +45,6 @@ const generateWriters = () => {
   const WRITERS_COUNT = 4;
 
   for (let i = 0; i < WRITERS_COUNT; i++) {
-    const writers = [
-      'Asghar Farhadi',
-      'Eric Roth',
-      'Aaron Sorkin',
-      'Woody Allen',
-      'Chang-Dong Lee',
-      'Richard Linklater',
-      'Lars von Trier',
-      'Quentin Tarantino',
-      'James Cameron',
-      'Tom McCarthy',
-      'Sarah Polley',
-      'Rian Johnson',
-    ];
-
     const randomIndex = getRandomInteger(0, writers.length - 1);
 
     writersList.push(writers[randomIndex]);
@@ -91,33 +58,6 @@ const generateActors = () => {
   const ACTORS_COUNT = 4;
 
   for (let i = 0; i < ACTORS_COUNT; i++) {
-    const actors = [
-      'Jack Nicholson',
-      'Robert De Niro',
-      'Al Pacino',
-      'Dustin Hoffman',
-      'Tom Hanks',
-      'Brad Pitt',
-      'Anthony Hopkins',
-      'Jeremy Irons',
-      'Denzel Washington',
-      'Jeff Bridges',
-      'Kevin Costner',
-      'Clint Eastwood',
-      'Leonardo DiCaprio',
-      'Meryl Streep',
-      'Jodie Foster',
-      'Elizabeth Taylor',
-      'Katharine Hepburn',
-      'Natalie Portman',
-      'Charlize Theron',
-      'Cate Blanchett',
-      'Judi Dench',
-      'Monica Bellucci',
-      'Angelina Jolie',
-      'Nicole Kidman',
-    ];
-
     const randomIndex = getRandomInteger(0, actors.length - 1);
 
     actorsList.push(actors[randomIndex]);
@@ -138,17 +78,6 @@ const generateReleaseDate = () => {
 };
 
 const generateCountry = () => {
-  const countries = [
-    'USA',
-    'France',
-    'Italy',
-    'Germany',
-    'Sweden',
-    'Australia',
-    'UK',
-    'Netherlands',
-  ];
-
   const randomIndex = getRandomInteger(0, countries.length - 1);
 
   return countries[randomIndex];
@@ -159,35 +88,10 @@ const generateRuntime = () => {
 
   const runtimeInMinutes = getRandomInteger(0, MAX_RUNTIME_IN_MINUTES);
 
-  /*
-  generateRuntimeFromMinutes = (mins) => {
-    const HOURS_ABB = 'h ';
-    const MINUTES_ABB = 'm';
-    const hours = Math.trunk(mins / 60);
-    const minutes = mins % 60;
-
-    return hours + HOURS_ABB + minutes + MINUTES_ABB;
-  }
-  */
   return runtimeInMinutes;
 };
 
 const generateGenresElement = () => {
-  const genres = [
-    'Romance',
-    'Thriller',
-    'Sci-Fi',
-    'Comedy',
-    'Horror',
-    'Action',
-    'Documentary',
-    'Adventure',
-    'Western',
-    'Roadmovie',
-    'Drama',
-    'Animation',
-  ];
-
   const randomIndex = getRandomInteger(0, genres.length - 1);
 
   return genres[randomIndex];
@@ -195,31 +99,16 @@ const generateGenresElement = () => {
 
 const generateGenres = () => {
   const GENRES_COUNT = 3;
-
-  const genres = [];
+  const genresArray = [];
 
   for (let i = 0; i < GENRES_COUNT; i++) {
-    genres.push(generateGenresElement());
+    genresArray.push(generateGenresElement());
   }
 
-  return genres;
+  return genresArray;
 };
 
 const generateTextFragment = () => {
-  const textPieces = [
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    'Cras aliquet varius magna, non porta ligula feugiat eget.',
-    'Fusce tristique felis at fermentum pharetra.',
-    'Aliquam id orci ut lectus varius viverra.',
-    'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
-    'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
-    'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
-    'Sed sed nisi sed augue convallis suscipit in sed felis.',
-    'Aliquam erat volutpat.',
-    'Nunc fermentum tortor ac porta dapibus.',
-    'In rutrum ac purus sit amet tempus.',
-  ];
-
   const randomIndex = getRandomInteger(0, textPieces.length - 1);
 
   return textPieces[randomIndex];
@@ -243,26 +132,12 @@ const generateIsWatched = () => {
 };
 
 const generateEmotions = () => {
-  const emotions = [
-    'smile',
-    'sleeping',
-    'puke',
-    'angry',
-  ];
   const randomIndex = getRandomInteger(0, emotions.length - 1);
 
   return emotions[randomIndex];
 };
 
 const generateCommentAuthorName = () => {
-  const names = [
-    'James Abdnor',
-    'Spencer Abrakham',
-    'Sandy Adams',
-    'Carl Albert',
-    'Maryone Allen',
-    'Tom Beville',
-  ];
   const randomIndex = getRandomInteger(0, names.length - 1);
 
   return names[randomIndex];
@@ -294,18 +169,6 @@ export const generateComments = () => {
   return comments;
 };
 
-/*
-export const COMMENTS_NUMBER = getRandomInteger(0, 5);
-
-export const generateComments = () => ({
-  id: getRandomInteger(1, COMMENTS_NUMBER),
-  message: generateTextFragment(),
-  emotion: generateEmotions(),
-  author: generateCommentAuthorName(),
-  date: generateDate(),
-});
-*/
-
 export const generateFilm = () => {
   const isWatched = generateIsWatched();
   const generateWatchingDate = () => {
@@ -317,8 +180,6 @@ export const generateFilm = () => {
   };
 
   return {
-    //id: i,
-    //comments: generateComments(), //rewrite
     title: generateTitle(),
     alternativeTitle: generateTitle(),
     poster: generatePoster(),

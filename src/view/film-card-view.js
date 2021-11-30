@@ -1,4 +1,3 @@
-import {generateComments} from '../mock/film'; // delete
 import {
   getRuntimeFromMinutes,
   getShortDescription,
@@ -6,7 +5,7 @@ import {
   checkIsActiveClassName
 } from '../utils';
 
-export const createFilmCardTemplate = (card) => {
+export const createFilmCardTemplate = (card, comments) => {
   const {
     poster,
     title,
@@ -19,8 +18,7 @@ export const createFilmCardTemplate = (card) => {
   } = card;
 
   const releaseYear = release.date.getFullYear();
-  const commentsArray = generateComments(); //rewrite
-  const commentsNumber = commentsArray.length;
+  const commentsNumber = comments.length;
   const watchlistClassName = userDetails.watchlist;
   const alreadyWatchedClassName = userDetails.alreadyWatched;
   const favoriteClassName = userDetails.favorite;
@@ -36,7 +34,7 @@ export const createFilmCardTemplate = (card) => {
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${getShortDescription(description)}</p>
-      <span class="film-card__comments">${commentsNumber} comments</span>
+      <span class="film-card__comments"> ${commentsNumber} comments</span>
     </a>
     <div class="film-card__controls">
       <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${checkIsActiveClassName(watchlistClassName)}" type="button">Add to watchlist</button>

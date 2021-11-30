@@ -4,8 +4,9 @@ import {
   checkIsActiveClassNamePopup
 } from '../utils';
 import {renderGenres} from './popup-genres-view';
+import {renderComment} from './comment-view';
 
-export const createPopupTemplate = (card) => {
+export const createPopupTemplate = (card, comments) => {
   const {
     title,
     alternativeTitle,
@@ -26,6 +27,16 @@ export const createPopupTemplate = (card) => {
   const watchlistClassName = userDetails.watchlist;
   const alreadyWatchedClassName = userDetails.alreadyWatched;
   const favoriteClassName = userDetails.favorite;
+  const commentsNumber = comments.length;
+
+  const renderComments = (array) => {
+    const commentsArray = [];
+    for(let i = 0; i < array.length; i++) {
+      commentsArray.push(renderComment(array[i]));
+    }
+
+    return commentsArray;
+  };
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -100,9 +111,9 @@ export const createPopupTemplate = (card) => {
 
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">0</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsNumber}</span></h3>
 
-        <ul class="film-details__comments-list"></ul>
+        <ul class="film-details__comments-list">${renderComments(comments)}</ul>
 
         <div class="film-details__new-comment">
           <div class="film-details__add-emoji-label">

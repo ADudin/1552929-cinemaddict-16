@@ -33,6 +33,12 @@ export const getReleaseDateForPopup = (key) => { // Преобразование
   return formattedReleaseDate;
 };
 
+export const getCommentDate = (date) => { // Преобразование даты комментария в заданный формат (модуль: comment-view.js);
+  const commentDate = dayjs(date).format('YYYY/MM/DD HH:mm');
+
+  return commentDate;
+};
+
 export const getShortDescription = (text) => { // Преобразование описания фильма в заданный формат (модуль: film-card-view.js);
   const LIMIT = 140;
   const description = text;
@@ -73,3 +79,22 @@ export const checkIsActiveClassNamePopup = (key) => { // Проверка для
 
   return className;
 };
+/*
+const getIdValue = (object) => { // Служебная функция для функции getIdValueArray;
+  const idValue = object.id;
+
+  return idValue;
+};
+
+export const getIdValueArray = (array) => { // Плучение массива из id комментариев (модуль: film-view.js);
+  const idArray = [];
+
+  for (let i = 0; i < array.length; i++) {
+    idArray.push(getIdValue(array[i]));
+  }
+
+  return idArray;
+};
+*/
+
+

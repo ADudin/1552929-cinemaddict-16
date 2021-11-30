@@ -12,26 +12,14 @@ import {createFilmsListTopRatedTemplate} from './view/films-list-top-rated.js';
 import {createFilmsListMostCommentedTemplate} from './view/films-list-most-commented.js';
 import {
   generateFilm,
-  //generateComments,
-  //COMMENTS_NUMBER
+  generateComments,
 } from './mock/film.js';
-
-const RenderPosition = {
-  BEFOREBEGIN: 'beforebegin',
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
-};
+import {RenderPosition} from './consts.js';
 
 const FILM_CARDS_NUMBER = 20;
 
 const filmCards = Array.from({length: FILM_CARDS_NUMBER}, generateFilm);
-/*
-const filmComments = Array.from({length: COMMENTS_NUMBER}, generateComments);
-const getFilmComments = ({comments}) => (
-  filmComments.filter((element) => comments.includes(element.id))
-);
-*/
+const filmComments = Array.from({length: FILM_CARDS_NUMBER}, generateComments);
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -58,9 +46,9 @@ const filmsList = filmsSection.querySelector('.films-list');
 const filmsListContainer = filmsList.querySelector('.films-list__container');
 
 for (let i = 0; i < FILM_CARDS_NUMBER; i++) {
-  renderTemplate(filmsListContainer, createFilmCardTemplate(filmCards[i]), RenderPosition.AFTERBEGIN);
+  renderTemplate(filmsListContainer, createFilmCardTemplate(filmCards[i], filmComments[i]), RenderPosition.AFTERBEGIN);
 }
 
 renderTemplate(filmsList, createShowMoreBtnTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(siteFooterElement, createPopupTemplate(filmCards[0], filmComments[0]), RenderPosition.AFTEREND);
 
-renderTemplate(siteFooterElement, createPopupTemplate(filmCards[0], /*getFilmComments(filmCards[0])*/), RenderPosition.AFTEREND);
