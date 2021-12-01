@@ -5,7 +5,7 @@ import {
   generateRatio,
   generateReleaseDate,
   generateDate,
-  generateIsWatched
+  isFilmWatched,
 } from '../utils';
 
 import {
@@ -21,8 +21,8 @@ import {
   NAMES,
   WRITERS_COUNT,
   ACTORS_COUNT,
-  MAX_AGE_LIMIT,
-  MIN_AGE_LIMIT,
+  MAX_AGE_RATING,
+  MIN_AGE_RATING,
   MAX_RUNTIME_IN_MINUTES,
   MIN_RUNTIME_IN_MINUTES,
   GENRES_COUNT,
@@ -49,7 +49,7 @@ export const generateComments = () => {
 };
 
 export const generateFilm = () => {
-  const isWatched = generateIsWatched();
+  const isWatched = isFilmWatched();
   const generateWatchingDate = () => {
     if (isWatched === false) {
       return null;
@@ -66,7 +66,7 @@ export const generateFilm = () => {
     director: getRandomArrayElement(DIRECTORS),
     writers: getRandomArray(WRITERS, WRITERS_COUNT),
     actors: getRandomArray(ACTORS, ACTORS_COUNT),
-    ageRating: getRandomInteger(MIN_AGE_LIMIT, MAX_AGE_LIMIT),
+    ageRating: getRandomInteger(MIN_AGE_RATING, MAX_AGE_RATING),
     release: {
       releaseCountry: getRandomArrayElement(COUNTRIES),
       date: generateReleaseDate(),

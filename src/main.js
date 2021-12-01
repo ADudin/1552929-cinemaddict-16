@@ -15,11 +15,13 @@ import {
   generateComments,
 } from './mock/film.js';
 import {RenderPosition} from './consts.js';
+import {generateFilter} from './mock/filter.js';
 
 const FILM_CARDS_NUMBER = 20;
 
 const filmCards = Array.from({length: FILM_CARDS_NUMBER}, generateFilm);
 const filmComments = Array.from({length: FILM_CARDS_NUMBER}, generateComments);
+const filters = generateFilter(filmCards);
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -31,7 +33,7 @@ const renderTemplate = (container, template, place) => {
 
 renderTemplate(siteMainElement, createFilmsSectionTemplate(), RenderPosition.AFTERBEGIN);
 renderTemplate(siteMainElement, createSortMenuTemplate(), RenderPosition.AFTERBEGIN);
-renderTemplate(siteMainElement, createSiteMenuTemplate(), RenderPosition.AFTERBEGIN);
+renderTemplate(siteMainElement, createSiteMenuTemplate(filters), RenderPosition.AFTERBEGIN);
 renderTemplate(siteHeaderElement, createUserProfileTemplate(), RenderPosition.BEFOREEND);
 //renderTemplate(siteMainElement, createStatisticTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(siteFooterElement, createFooterStatisticsTemplate(), RenderPosition.BEFOREEND);

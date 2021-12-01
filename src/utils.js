@@ -52,12 +52,24 @@ export const generateDate = () => { // Генерация случайной д�
   return dayjs().add(minutesGap, 'minute').toDate();
 };
 
-export const generateIsWatched = () => { // Генерация случайного значения "просмотрен / не просмотрен фильм" (модуль: film.js);
+export const isFilmWatched = () => { // Генерация случайного значения "просмотрен / не просмотрен фильм" (модули: film.js, filter.js);
   const isWatched = Boolean(getRandomInteger(0, 1));
 
   return isWatched;
 };
+/*
+export const isFilmInWatchlist = () => { // Генерация случайного значения "в списке к просмотру/ не в списке к просмотру" (модули: film.js, filter.js);
+  const isInWatchlist = Boolean(getRandomInteger(0, 1));
 
+  return  isInWatchlist;
+}
+
+export const isFilmFavorite = () => { // Генерация случайного значения "в избранном / не в избранном" (модули: film.js, filter.js);
+  const isFavorite = Boolean(getRandomInteger(0, 1));
+
+  return  isFavorite;
+}
+*/
 export const getRuntimeFromMinutes = (mins) => { // Преобразование продолжительности фильма в заданный формат (модули: film-card-view.js, popup-view.js);
   const HOURS_ABB = 'h ';
   const MINUTES_ABB = 'm';
@@ -130,6 +142,8 @@ export const checkIsActiveClassNamePopup = (key) => { // Проверка для
 
   return className;
 };
+
+export const formatFirstLetterToUpperCase = (title) => (title[0].toUpperCase() + title.slice(1)); // Формат с большой буквы (модуль: site-menu-view.js);
 /*
 const getIdValue = (object) => { // Служебная функция для функции getIdValueArray;
   const idValue = object.id;
