@@ -1,10 +1,61 @@
 import dayjs from 'dayjs';
 
-export const getRandomInteger = (a = 0, b = 1) => { // Генерация случайного числа (модули: film.js);
+export const getRandomInteger = (a = 0, b = 1) => { // Генерация случайного числа (модуль: film.js);
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a,b));
 
   return Math.floor(lower + Math.random() * (upper - lower + 1));
+};
+
+export const getRandomArrayElement = (array) => { // Генерация случайного элемента массива (модуль: film.js);
+  const randomIndex = getRandomInteger(0, array.length - 1);
+
+  return array[randomIndex];
+};
+
+export const getRandomArray = (array, randomArrayLength) => { // Генерация случайного массива элементов (модуль: film.js);
+  const randomArray = [];
+
+  for (let i = 0; i < randomArrayLength; i++) {
+    const randomIndex = getRandomInteger(0, array.length - 1);
+
+    randomArray.push(array[randomIndex]);
+  }
+
+  return randomArray;
+};
+
+export const generateRatio = () => { // Генерация случайного рейтинга фильма (модуль: film.js);
+  const MAX_RATIO = 10;
+  const MIN_RATIO = 1;
+  const FRACTION_PART_VALUE = 1;
+
+  const ratio = (getRandomInteger(MIN_RATIO, MAX_RATIO) * Math.random()).toFixed(FRACTION_PART_VALUE);
+  return ratio;
+};
+
+export const generateReleaseDate = () => { // Генерация случайной даты релиза фильма (модуль: film.js);
+  const FIRST_MOVIE_SHOWN_YEAR = 1896;
+  const DAYS_NUMBER_IN_YEAR = 365;
+
+  const currentYear = Number(dayjs().toDate().getFullYear());
+  const maxDaysGap = (currentYear - FIRST_MOVIE_SHOWN_YEAR) * DAYS_NUMBER_IN_YEAR;
+  const daysGap = getRandomInteger(-maxDaysGap, 0);
+
+  return dayjs().add(daysGap, 'day').toDate();
+};
+
+export const generateDate = () => { // Генерация случайной даты релиза фильма (модуль: film.js);
+  const MAX_MINUTES_GAP = 525600;
+  const minutesGap = getRandomInteger(-MAX_MINUTES_GAP, 0);
+
+  return dayjs().add(minutesGap, 'minute').toDate();
+};
+
+export const generateIsWatched = () => { // Генерация случайного значения "просмотрен / не просмотрен фильм" (модуль: film.js);
+  const isWatched = Boolean(getRandomInteger(0, 1));
+
+  return isWatched;
 };
 
 export const getRuntimeFromMinutes = (mins) => { // Преобразование продолжительности фильма в заданный формат (модули: film-card-view.js, popup-view.js);
@@ -52,8 +103,8 @@ export const getShortDescription = (text) => { // Преобразование �
   return description.substring(0, LIMIT - 1) + etc;
 };
 
-export const getFirstArrayElement = (Array) => { // Получение первого элемента массива (модуль: film-card-view.js);
-  const genre = Array[0];
+export const getFirstArrayElement = (array) => { // Получение первого элемента массива (модуль: film-card-view.js);
+  const genre = array[0];
 
   return genre;
 };

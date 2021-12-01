@@ -5,7 +5,7 @@ export const RenderPosition = {
   AFTEREND: 'afterend',
 };
 
-export const titles = [
+export const TITLES = [
   'Made for Each Other',
   'Popeye Meets Sinbad',
   'Sagebrush Trial',
@@ -15,7 +15,7 @@ export const titles = [
   'The Man With the Golden Arm',
 ];
 
-export const posters = [
+export const POSTERS = [
   'made-for-each-other.png',
   'popeye-meets-sinbad.png',
   'sagebrush-trail.jpg',
@@ -25,7 +25,7 @@ export const posters = [
   'the-man-with-the-golden-arm.jpg',
 ];
 
-export const directors = [
+export const DIRECTORS = [
   'Steven Spielberg',
   'Martin Scorsese',
   'Alfred Hitchcock',
@@ -35,7 +35,7 @@ export const directors = [
   'Christopher Nolan',
 ];
 
-export const writers = [
+export const WRITERS = [
   'Asghar Farhadi',
   'Eric Roth',
   'Aaron Sorkin',
@@ -50,7 +50,9 @@ export const writers = [
   'Rian Johnson',
 ];
 
-export const actors = [
+export const WRITERS_COUNT = 4;
+
+export const ACTORS = [
   'Jack Nicholson',
   'Robert De Niro',
   'Al Pacino',
@@ -77,7 +79,9 @@ export const actors = [
   'Nicole Kidman',
 ];
 
-export const countries = [
+export const ACTORS_COUNT = 4;
+
+export const COUNTRIES = [
   'USA',
   'France',
   'Italy',
@@ -88,7 +92,7 @@ export const countries = [
   'Netherlands',
 ];
 
-export const genres = [
+export const GENRES = [
   'Romance',
   'Thriller',
   'Sci-Fi',
@@ -103,7 +107,9 @@ export const genres = [
   'Animation',
 ];
 
-export const textPieces = [
+export const GENRES_COUNT = 3;
+
+export const TEXT_FRAGMENTS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
   'Fusce tristique felis at fermentum pharetra.',
@@ -117,14 +123,16 @@ export const textPieces = [
   'In rutrum ac purus sit amet tempus.',
 ];
 
-export const emotions = [
+export const TEXT_FRAGMENTS_CONT = 5;
+
+export const EMOTIONS = [
   'smile',
   'sleeping',
   'puke',
   'angry',
 ];
 
-export const names = [
+export const NAMES = [
   'James Abdnor',
   'Spencer Abrakham',
   'Sandy Adams',
@@ -132,3 +140,8 @@ export const names = [
   'Maryone Allen',
   'Tom Beville',
 ];
+
+export const MAX_AGE_LIMIT = 18;
+export const MIN_AGE_LIMIT = 3;
+export const MAX_RUNTIME_IN_MINUTES = 240;
+export const MIN_RUNTIME_IN_MINUTES = 40;
