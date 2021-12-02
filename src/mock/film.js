@@ -6,6 +6,7 @@ import {
   generateReleaseDate,
   generateDate,
   isFilmWatched,
+  getCommentsIdArray
 } from '../utils';
 
 import {
@@ -26,13 +27,13 @@ import {
   MAX_RUNTIME_IN_MINUTES,
   MIN_RUNTIME_IN_MINUTES,
   GENRES_COUNT,
-  TEXT_FRAGMENTS_CONT
+  TEXT_FRAGMENTS_CONT,
+  MAX_COMMENTS_COUNT
 } from '../consts';
 
 export const generateComments = () => {
   const comments = [];
-  const MAX_COMMENTS_NUMBER = 5;
-  const commentsNumber = getRandomInteger(0, MAX_COMMENTS_NUMBER);
+  const commentsNumber = getRandomInteger(0, MAX_COMMENTS_COUNT);
 
   for (let i = 0; i < commentsNumber; i++) {
     const comment = new Object();
@@ -80,5 +81,6 @@ export const generateFilm = () => {
       watchingDate: generateWatchingDate(),
       favorite: Boolean(getRandomInteger(0, 1)),
     },
+    comments: getCommentsIdArray(MAX_COMMENTS_COUNT),
   };
 };
