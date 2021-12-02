@@ -14,10 +14,12 @@ import {
   generateFilm,
   generateComments,
 } from './mock/film.js';
-import {RenderPosition} from './consts.js';
+import {
+  RenderPosition,
+  FILM_CARDS_NUMBER,
+  FILM_COUNT_PER_STEP
+} from './consts.js';
 import {generateFilter} from './mock/filter.js';
-
-const FILM_CARDS_NUMBER = 20;
 
 const filmCards = Array.from({length: FILM_CARDS_NUMBER}, generateFilm);
 const filmComments = Array.from({length: FILM_CARDS_NUMBER}, generateComments);
@@ -47,10 +49,29 @@ renderTemplate(filmsSection, createFilmsListMostCommentedTemplate(), RenderPosit
 const filmsList = filmsSection.querySelector('.films-list');
 const filmsListContainer = filmsList.querySelector('.films-list__container');
 
-for (let i = 0; i < FILM_CARDS_NUMBER; i++) {
+for (let i = 0; i < Math.min(filmCards.length, FILM_COUNT_PER_STEP); i++) {
   renderTemplate(filmsListContainer, createFilmCardTemplate(filmCards[i], filmComments[i]), RenderPosition.AFTERBEGIN);
 }
 
-renderTemplate(filmsList, createShowMoreBtnTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(siteFooterElement, createPopupTemplate(filmCards[0], filmComments[0]), RenderPosition.AFTEREND);
 
+if (filmCards.length > FILM_COUNT_PER_STEP) {
+  let renderFilmCount = FILM_COUNT_PER_STEP;
+
+  renderTemplate(filmsList, createShowMoreBtnTemplate(), RenderPosition.BEFOREEND);
+
+  const loadMoreButton = filmsList.querySelector('.films-list__show-more');
+
+  loadMoreButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    filmCards
+      .slice(renderFilmCount, renderFilmCount + FILM_COUNT_PER_STEP)
+      .forEach((film, comments) => renderTemplate(filmsListContainer, createFilmCardTemplate(film, comments), RenderPosition.BEFOREEND));
+
+    renderFilmCount += FILM_COUNT_PER_STEP;
+
+    if(renderFilmCount >= filmCards.length) {
+      loadMoreButton.remove();
+    }
+  });
+}

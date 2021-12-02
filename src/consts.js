@@ -145,3 +145,6 @@ export const MAX_AGE_RATING = 18;
 export const MIN_AGE_RATING = 3;
 export const MAX_RUNTIME_IN_MINUTES = 240;
 export const MIN_RUNTIME_IN_MINUTES = 40;
+
+export const FILM_CARDS_NUMBER = 20;
+export const FILM_COUNT_PER_STEP = 5;
