@@ -5,7 +5,7 @@ import {
   checkIsActiveClassName
 } from '../utils';
 
-export const createFilmCardTemplate = (card, comments) => {
+export const createFilmCardTemplate = (card) => {
   const {
     poster,
     title,
@@ -14,7 +14,8 @@ export const createFilmCardTemplate = (card, comments) => {
     runtime,
     genre,
     description,
-    userDetails
+    userDetails,
+    comments
   } = card;
 
   const releaseYear = release.date.getFullYear();

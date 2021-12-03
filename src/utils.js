@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {MAX_COMMENTS_COUNT} from './consts';
 
 export const getRandomInteger = (a = 0, b = 1) => { // Генерация случайного числа (модуль: film.js);
   const lower = Math.ceil(Math.min(a, b));
@@ -133,14 +134,27 @@ export const checkIsActiveClassNamePopup = (key) => { // Проверка для
 
 export const formatFirstLetterToUpperCase = (title) => (title[0].toUpperCase() + title.slice(1)); // Формат с большой буквы (модуль: site-menu-view.js);
 
-export const getCommentsIdArray = (idCount) => { // Создание массива id комментариев (модуль: film.js);
+export const getCommentsIdArray = () => { // Создание массива id комментариев (модуль: film.js);
   const commentsId = [];
+  const idCount = getRandomInteger(0, MAX_COMMENTS_COUNT);
 
   for (let i = 0; i < idCount; i++) {
     commentsId.push(i);
   }
 
   return commentsId;
+};
+
+export const getTopRatedFilms = (films, filmsCount) => { // Сортировка карточек фильмов по рейтингу (модуль: main.js);
+  const sortedFilms = films.sort((a, b) => b.totalRating - a.totalRating).slice(0, filmsCount);
+
+  return sortedFilms;
+};
+
+export const getMostCommentedFilms = (films, filmsCount) => { // Сортировка карточек фильмов по количеству комментариев (модуль: main.js);
+  const sortedFilms = films.sort((a, b) => b.comments.length - a.comments.length).slice(0, filmsCount);
+
+  return sortedFilms;
 };
 /*
 const getIdValue = (object) => { // Служебная функция для функции getIdValueArray;

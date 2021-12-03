@@ -149,5 +149,7 @@ export const MIN_RUNTIME_IN_MINUTES = 40;
 
 export const FILM_CARDS_NUMBER = 20;
 export const FILM_COUNT_PER_STEP = 5;
+export const TOP_RATED_FILMS_COUNT = 2;
+export const MOST_COMMENTED_FILMS_COUNT = 2;
 
 export const MAX_COMMENTS_COUNT = 5;
