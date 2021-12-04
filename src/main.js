@@ -1,9 +1,9 @@
 import SiteMenuView from './view/site-menu-view.js';
-import {createUserProfileTemplate} from './view/user-profile-view.js';
-import {createSortMenuTemplate} from './view/sort-menu-view.js';
-//import {createStatisticTemplate} from './view/statistic-view.js';
-import {createFooterStatisticsTemplate} from './view/footer-statistics-view.js';
-import {createFilmsSectionTemplate} from './view/films-section-view.js';
+import UserProfileView from './view/user-profile-view.js';
+import SortMenuView from './view/sort-menu-view.js';
+//import StatisticView from './view/statistic-view.js';
+import FooterStatisticsView from './view/footer-statistics-view.js';
+import FilmSectionView from './view/films-section-view.js';
 import {createFilmsListTemplate} from './view/films-list-view.js';
 import {createFilmCardTemplate} from './view/film-card-view.js';
 import {createShowMoreBtnTemplate} from './view/show-more-btn-view.js';
@@ -30,6 +30,7 @@ import {
 } from './utils.js';
 
 import {renderTemplate, renderElement} from './render.js';
+//import StatisticView from './view/statistic-view.js';
 
 const filmCards = Array.from({length: FILM_CARDS_NUMBER}, generateFilm);
 const filmComments = Array.from({length: FILM_CARDS_NUMBER}, generateComments);
@@ -39,12 +40,12 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-renderTemplate(siteMainElement, createFilmsSectionTemplate(), RenderPosition.AFTERBEGIN);
-renderTemplate(siteMainElement, createSortMenuTemplate(), RenderPosition.AFTERBEGIN);
+renderElement(siteMainElement, new FilmSectionView().element, RenderPosition.AFTERBEGIN);
+renderElement(siteMainElement, new SortMenuView().element, RenderPosition.AFTERBEGIN);
 renderElement(siteMainElement, new SiteMenuView(filters).element, RenderPosition.AFTERBEGIN);
-renderTemplate(siteHeaderElement, createUserProfileTemplate(), RenderPosition.BEFOREEND);
-//renderTemplate(siteMainElement, createStatisticTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(siteFooterElement, createFooterStatisticsTemplate(), RenderPosition.BEFOREEND);
+renderElement(siteHeaderElement, new UserProfileView().element, RenderPosition.BEFOREEND);
+//renderElement(siteMainElement, new StatisticView().element, RenderPosition.BEFOREEND);
+renderElement(siteFooterElement, new FooterStatisticsView().element, RenderPosition.BEFOREEND);
 
 const filmsSection = siteMainElement.querySelector('.films');
 
