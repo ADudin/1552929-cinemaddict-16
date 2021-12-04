@@ -27,3 +27,10 @@ export const createElement = (template) => {
 
   return newElement.firstChild;
 };
+
+export const createUnorderedListOfElements = (template) => {
+  const newList = document.createElement('ul');
+  newList.innerHTML = template;
+
+  return newList;
+};
