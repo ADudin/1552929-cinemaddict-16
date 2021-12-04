@@ -1,4 +1,4 @@
-import {createSiteMenuTemplate} from './view/site-menu-view.js';
+import SiteMenuView from './view/site-menu-view.js';
 import {createUserProfileTemplate} from './view/user-profile-view.js';
 import {createSortMenuTemplate} from './view/sort-menu-view.js';
 //import {createStatisticTemplate} from './view/statistic-view.js';
@@ -29,6 +29,8 @@ import {
   getMostCommentedFilms
 } from './utils.js';
 
+import {renderTemplate, renderElement} from './render.js';
+
 const filmCards = Array.from({length: FILM_CARDS_NUMBER}, generateFilm);
 const filmComments = Array.from({length: FILM_CARDS_NUMBER}, generateComments);
 const filters = generateFilter(filmCards);
@@ -37,13 +39,9 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-const renderTemplate = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 renderTemplate(siteMainElement, createFilmsSectionTemplate(), RenderPosition.AFTERBEGIN);
 renderTemplate(siteMainElement, createSortMenuTemplate(), RenderPosition.AFTERBEGIN);
-renderTemplate(siteMainElement, createSiteMenuTemplate(filters), RenderPosition.AFTERBEGIN);
+renderElement(siteMainElement, new SiteMenuView(filters).element, RenderPosition.AFTERBEGIN);
 renderTemplate(siteHeaderElement, createUserProfileTemplate(), RenderPosition.BEFOREEND);
 //renderTemplate(siteMainElement, createStatisticTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(siteFooterElement, createFooterStatisticsTemplate(), RenderPosition.BEFOREEND);
