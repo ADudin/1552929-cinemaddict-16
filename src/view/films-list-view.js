@@ -1,7 +1,9 @@
-export const createFilmsListTemplate = () => (
-  `<section class="films-list">
-    <h2 class="films-list__title">All movies. Upcoming</h2>
-    <div class="films-list__container">
+export const createFilmsListTemplate = (sectionClass, titleClass, serviceClass, title) => {
+  const template = `<section class="films-list ${sectionClass}">
+    <h2 class="films-list__title ${titleClass}">${title}</h2>
+    <div class="films-list__container ${serviceClass}">
     </div>
-  </section>`
-);
+  </section>`;
+
+  return template;
+};
