@@ -5,7 +5,9 @@ import {
   checkIsActiveClassName
 } from '../utils';
 
-export const createFilmCardTemplate = (card) => {
+import {createElement} from '../render';
+
+const createFilmCardTemplate = (card) => {
   const {
     poster,
     title,
@@ -44,3 +46,28 @@ export const createFilmCardTemplate = (card) => {
     </div>
   </article>`;
 };
+
+export default class FilmCardView {
+  #element = null;
+  #card = null;
+
+  constructor(card) {
+    this.#card = card;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createFilmCardTemplate(this.#card);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

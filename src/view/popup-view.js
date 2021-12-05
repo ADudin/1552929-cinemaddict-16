@@ -4,6 +4,8 @@ import {
   checkIsActiveClassNamePopup
 } from '../utils';
 
+import {createElement} from '../render';
+
 const renderGenres = (genresArray) => {
   const genres = [];
 
@@ -150,3 +152,30 @@ export const createPopupTemplate = (card, comments) => {
   </form>
 </section>`;
 };
+
+export default class PopupView {
+  #element = null;
+  #card = null;
+  #comments = null;
+
+  constructor(card, comments) {
+    this.#card = card;
+    this.#comments = comments;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createPopupTemplate(this.#card, this.#comments);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

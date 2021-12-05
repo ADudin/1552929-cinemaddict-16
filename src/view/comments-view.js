@@ -30,7 +30,7 @@ const renderComments = (array) => {
     commentsArray.push(renderComment(array[i]));
   }
 
-  return commentsArray;
+  return commentsArray.join('');
 };
 
 export default class CommentsView {
