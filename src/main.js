@@ -74,7 +74,7 @@ const renderFilmCard = (filmListElement, filmCard, comments) => {
   render(filmListElement, filmComponent.element, RenderPosition.BEFOREEND);
 };
 
-render(siteMainElement, new SiteMenuView(filters).element, RenderPosition.AFTERBEGIN);
+render(siteMainElement, new SiteMenuView(filters).element, RenderPosition.BEFOREBEGIN);
 render(siteHeaderElement, new UserProfileView().element, RenderPosition.BEFOREEND);
 //renderElement(siteMainElement, new StatisticView().element, RenderPosition.BEFOREEND);
 
