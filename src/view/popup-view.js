@@ -3,8 +3,18 @@ import {
   getReleaseDateForPopup,
   checkIsActiveClassNamePopup
 } from '../utils';
-import {renderGenres} from './popup-genres-view';
-import {renderComment} from './comment-view';
+
+import {createElement} from '../render';
+
+const renderGenres = (genresArray) => {
+  const genres = [];
+
+  for (let i = 0; i < genresArray.length; i ++) {
+    genres.push(`<span class="film-details__genre">${genresArray[i]}</span>`);
+  }
+
+  return genres.join('');
+};
 
 export const createPopupTemplate = (card, comments) => {
   const {
@@ -28,15 +38,6 @@ export const createPopupTemplate = (card, comments) => {
   const alreadyWatchedClassName = userDetails.alreadyWatched;
   const favoriteClassName = userDetails.favorite;
   const commentsNumber = comments.length;
-
-  const renderComments = (array) => {
-    const commentsArray = [];
-    for(let i = 0; i < array.length; i++) {
-      commentsArray.push(renderComment(array[i]));
-    }
-
-    return commentsArray;
-  };
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -113,7 +114,7 @@ export const createPopupTemplate = (card, comments) => {
       <section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsNumber}</span></h3>
 
-        <ul class="film-details__comments-list">${renderComments(comments)}</ul>
+        <ul class="film-details__comments-list"></ul>
 
         <div class="film-details__new-comment">
           <div class="film-details__add-emoji-label">
@@ -151,3 +152,30 @@ export const createPopupTemplate = (card, comments) => {
   </form>
 </section>`;
 };
+
+export default class PopupView {
+  #element = null;
+  #card = null;
+  #comments = null;
+
+  constructor(card, comments) {
+    this.#card = card;
+    this.#comments = comments;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createPopupTemplate(this.#card, this.#comments);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

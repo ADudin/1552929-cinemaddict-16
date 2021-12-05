@@ -1,12 +1,12 @@
 import {createElement} from '../render';
 
-const createFooterStatisticsTemplate = () => (
-  `<section class="footer__statistics">
-  <p>130 291 movies inside</p>
-</section>`
+const createNoFilmsTemplate = () => (
+  `<p class="board__no-tasks">
+    There are no movies in our database
+  </p>`
 );
 
-export default class FooterStatisticsView {
+export default class NoFilmsView {
   #element = null;
 
   get element() {
@@ -18,10 +18,10 @@ export default class FooterStatisticsView {
   }
 
   get template() {
-    return createFooterStatisticsTemplate();
+    return createNoFilmsTemplate();
   }
 
   removeElement() {
-    this.#element = null;
+    this.element = null;
   }
 }
