@@ -156,6 +156,7 @@ export const getMostCommentedFilms = (films, filmsCount) => { // Сортиро�
 
   return sortedFilms;
 };
+
 /*
 const getIdValue = (object) => { // Служебная функция для функции getIdValueArray;
   const idValue = object.id;
