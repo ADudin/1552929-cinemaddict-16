@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from './abstract-view.js';
 
 const createShowMoreBtnTemplate = () => (
   `<button class="films-list__show-more">
@@ -6,22 +6,8 @@ const createShowMoreBtnTemplate = () => (
   </button>`
 );
 
-export default class ShowMoreBtnView {
-  #element = null;
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
+export default class ShowMoreBtnView extends AbstractView {
   get template() {
     return createShowMoreBtnTemplate();
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
