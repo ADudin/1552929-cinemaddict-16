@@ -6,6 +6,7 @@ import {
 export default class AbstractView {
   #element = null;
   #unorderedListElement = null;
+  _callback = {};
 
   constructor() {
     if (new.target === AbstractView) {
