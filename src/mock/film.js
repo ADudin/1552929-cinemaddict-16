@@ -7,7 +7,7 @@ import {
   generateDate,
   isFilmWatched,
   getCommentsIdArray
-} from '../utils';
+} from '../utils/common';
 
 import {
   TITLES,

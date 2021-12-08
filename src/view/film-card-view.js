@@ -3,7 +3,7 @@ import {
   getShortDescription,
   getFirstArrayElement,
   checkIsActiveClassName
-} from '../utils';
+} from '../utils/common';
 
 import AbstractView from './abstract-view.js';
 

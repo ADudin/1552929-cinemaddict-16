@@ -2,7 +2,7 @@ import {
   getRuntimeFromMinutes,
   getReleaseDateForPopup,
   checkIsActiveClassNamePopup
-} from '../utils';
+} from '../utils/common';
 
 import AbstractView from './abstract-view.js';
 

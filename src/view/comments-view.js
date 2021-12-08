@@ -1,4 +1,4 @@
-import {getCommentDate} from '../utils';
+import {getCommentDate} from '../utils/common';
 import AbstractView from './abstract-view.js';
 
 const renderComment = (comment) => {

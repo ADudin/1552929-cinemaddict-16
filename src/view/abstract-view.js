@@ -1,7 +1,7 @@
 import {
   createElement,
   createUnorderedListOfElements
-} from '../render';
+} from '../utils/render';
 
 export default class AbstractView {
   #element = null;

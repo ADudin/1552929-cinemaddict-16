@@ -1,4 +1,4 @@
-import {formatFirstLetterToUpperCase} from '../utils';
+import {formatFirstLetterToUpperCase} from '../utils/common';
 import AbstractView from './abstract-view.js';
 
 const createFilterItemTemplate = (filter, isFirst, isActive) => {
