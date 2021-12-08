@@ -1,5 +1,5 @@
 import {getCommentDate} from '../utils';
-import {createUnorderedListOfElements} from '../render';
+import AbstractUnorderedListView from './abstract-unordered-list-view';
 
 const renderComment = (comment) => {
   const {
@@ -33,28 +33,16 @@ const renderComments = (array) => {
   return commentsArray.join('');
 };
 
-export default class CommentsView {
-  #element = null;
+export default class CommentsView extends AbstractUnorderedListView {
   #comments = null;
 
   constructor(comments) {
+    super();
     this.#comments = comments;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createUnorderedListOfElements(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
 
     return renderComments(this.#comments);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

@@ -4,7 +4,7 @@ import {
   checkIsActiveClassNamePopup
 } from '../utils';
 
-import {createElement} from '../render';
+import AbstractView from './abstract-view.js';
 
 const renderGenres = (genresArray) => {
   const genres = [];
@@ -153,29 +153,17 @@ export const createPopupTemplate = (card, comments) => {
 </section>`;
 };
 
-export default class PopupView {
-  #element = null;
+export default class PopupView extends AbstractView {
   #card = null;
   #comments = null;
 
   constructor(card, comments) {
+    super();
     this.#card = card;
     this.#comments = comments;
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
   get template() {
     return createPopupTemplate(this.#card, this.#comments);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
