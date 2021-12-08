@@ -1,7 +1,11 @@
-import {createElement} from '../render';
+import {
+  createElement,
+  createUnorderedListOfElements
+} from '../render';
 
 export default class AbstractView {
   #element = null;
+  #unorderedListElement = null;
 
   constructor() {
     if (new.target === AbstractView) {
@@ -17,11 +21,23 @@ export default class AbstractView {
     return this.#element;
   }
 
+  get unorderedListElement() {
+    if (!this.#unorderedListElement) {
+      this.#unorderedListElement = createUnorderedListOfElements(this.template);
+    }
+
+    return this.#unorderedListElement;
+  }
+
   get template() {
     throw new Error('Abstract method not implemented: get template');
   }
 
   removeElement() {
     this.#element = null;
+  }
+
+  removeUnorderedListElement() {
+    this.#unorderedListElement = null;
   }
 }

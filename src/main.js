@@ -71,7 +71,7 @@ const renderFilmCard = (filmListElement, filmCard, comments) => {
     const commentsList = popup.element.querySelector('.film-details__comments-list');
     const filmCommentsElement = comments;
 
-    render(commentsList, new CommentsView(filmCommentsElement).element, RenderPosition.BEFOREEND);
+    render(commentsList, new CommentsView(filmCommentsElement).unorderedListElement, RenderPosition.BEFOREEND);
     document.addEventListener('keydown', onEscKeyDown);
   });
 

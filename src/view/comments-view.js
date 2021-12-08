@@ -1,5 +1,5 @@
 import {getCommentDate} from '../utils';
-import AbstractUnorderedListView from './abstract-unordered-list-view';
+import AbstractView from './abstract-view.js';
 
 const renderComment = (comment) => {
   const {
@@ -33,7 +33,7 @@ const renderComments = (array) => {
   return commentsArray.join('');
 };
 
-export default class CommentsView extends AbstractUnorderedListView {
+export default class CommentsView extends AbstractView {
   #comments = null;
 
   constructor(comments) {
