@@ -24,15 +24,6 @@ const renderComment = (comment) => {
   </li>`;
 };
 
-const renderComments = (array) => {
-  const commentsArray = [];
-  for(let i = 0; i < array.length; i++) {
-    commentsArray.push(renderComment(array[i]));
-  }
-
-  return commentsArray.join('');
-};
-
 export default class CommentsView extends AbstractView {
   #comments = null;
 
@@ -43,6 +34,6 @@ export default class CommentsView extends AbstractView {
 
   get template() {
 
-    return renderComments(this.#comments);
+    return renderComment(this.#comments);
   }
 }

@@ -7,7 +7,7 @@ import {
 
 import AbstractView from './abstract-view.js';
 
-const createFilmCardTemplate = (card) => {
+const createFilmCardTemplate = (card, comments) => {
   const {
     poster,
     title,
@@ -17,7 +17,6 @@ const createFilmCardTemplate = (card) => {
     genre,
     description,
     userDetails,
-    comments
   } = card;
 
   const releaseYear = release.date.getFullYear();
@@ -49,14 +48,16 @@ const createFilmCardTemplate = (card) => {
 
 export default class FilmCardView extends AbstractView {
   #card = null;
+  #comments = null;
 
-  constructor(card) {
+  constructor(card, comments) {
     super();
     this.#card = card;
+    this.#comments = comments;
   }
 
   get template() {
-    return createFilmCardTemplate(this.#card);
+    return createFilmCardTemplate(this.#card, this.#comments);
   }
 
   setShowPopupHandler = (callback) => {

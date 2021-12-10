@@ -47,7 +47,7 @@ const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
 const renderFilmCard = (filmListElement, filmCard, comments) => {
-  const filmComponent = new FilmCardView(filmCard);
+  const filmComponent = new FilmCardView(filmCard, comments);
   const popup = new PopupView(filmCard, comments);
   const documentBody = document.querySelector('body');
 
@@ -75,7 +75,10 @@ const renderFilmCard = (filmListElement, filmCard, comments) => {
     const commentsList = popup.element.querySelector('.film-details__comments-list');
     const filmCommentsElement = comments;
 
-    render(commentsList, new CommentsView(filmCommentsElement).unorderedListElement, RenderPosition.BEFOREEND);
+    for (let i = 0; i < filmCommentsElement.length; i++) {
+      render(commentsList, new CommentsView(filmCommentsElement[i]), RenderPosition.BEFOREEND);
+    }
+
     document.addEventListener('keydown', onEscKeyDown);
   });
 
