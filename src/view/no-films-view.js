@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from './abstract-view.js';
 
 const createNoFilmsTemplate = () => (
   `<p class="board__no-tasks">
@@ -6,22 +6,8 @@ const createNoFilmsTemplate = () => (
   </p>`
 );
 
-export default class NoFilmsView {
-  #element = null;
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
+export default class NoFilmsView extends AbstractView{
   get template() {
     return createNoFilmsTemplate();
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

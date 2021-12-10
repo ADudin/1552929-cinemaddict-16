@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from './abstract-view.js';
 
 const createFilmsListTemplate = (sectionClass, titleClass, serviceClass, title) => {
   const template = `<section class="films-list ${sectionClass}">
@@ -10,33 +10,21 @@ const createFilmsListTemplate = (sectionClass, titleClass, serviceClass, title) 
   return template;
 };
 
-export default class FilmsListView {
-  #element = null;
+export default class FilmsListView extends AbstractView {
   #sectionClass = null;
   #titleClass = null;
   #serviceClass = null;
   #title = null;
 
   constructor(sectionClass, titleClass, serviceClass, title) {
+    super();
     this.#sectionClass = sectionClass;
     this.#titleClass = titleClass;
     this.#serviceClass = serviceClass;
     this.#title = title;
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
   get template() {
     return createFilmsListTemplate(this.#sectionClass, this.#titleClass, this.#serviceClass, this.#title);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
