@@ -2,7 +2,7 @@ import SiteMenuView from './view/site-menu-view.js';
 import UserProfileView from './view/user-profile-view.js';
 import FooterStatisticsView from './view/footer-statistics-view.js';
 //import StatisticView from './view/statistic-view.js';
-import MovieBoardPresenter from './presenter/film-cards-presenter.js';
+import MovieBoardPresenter from './presenter/movie-board-presenter.js';
 
 import {
   generateFilm,
