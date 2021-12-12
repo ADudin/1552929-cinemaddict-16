@@ -157,6 +157,29 @@ export const getMostCommentedFilms = (films, filmsCount) => { // Сортиро�
   return sortedFilms;
 };
 
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+  //console.log(items);
+  //console.log(index);
+  //console.log(update);
+
+  if (index === -1) {
+    return items;
+  }
+  /*
+  console.log([
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ]);
+  */
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+
 /*
 const getIdValue = (object) => { // Служебная функция для функции getIdValueArray;
   const idValue = object.id;

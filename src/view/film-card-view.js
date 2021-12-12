@@ -7,7 +7,7 @@ import {
 
 import AbstractView from './abstract-view.js';
 
-const createFilmCardTemplate = (card, comments) => {
+const createFilmCardTemplate = (card) => {
   const {
     poster,
     title,
@@ -17,6 +17,7 @@ const createFilmCardTemplate = (card, comments) => {
     genre,
     description,
     userDetails,
+    comments
   } = card;
 
   const releaseYear = release.date.getFullYear();
@@ -60,9 +61,19 @@ export default class FilmCardView extends AbstractView {
     return createFilmCardTemplate(this.#card, this.#comments);
   }
 
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click',this.#favoriteClickHandler);
+  }
+
   setShowPopupHandler = (callback) => {
     this._callback.showPopup = callback;
-    this.element.querySelector('.film-card__link').addEventListener('click', this.#showPopupClickHandler);
+    this.element.querySelector('.film-card__link').addEventListener('click',this.#showPopupClickHandler);
+  }
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   }
 
   #showPopupClickHandler = (evt) => {

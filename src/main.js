@@ -6,7 +6,7 @@ import MovieBoardPresenter from './presenter/movie-board-presenter.js';
 
 import {
   generateFilm,
-  generateComments,
+  //generateComments,
 } from './mock/film.js';
 
 import {
@@ -17,8 +17,8 @@ import {
 import {generateFilter} from './mock/filter.js';
 import {render} from './utils/render.js';
 
-const filmCards = Array.from({length: FILM_CARDS_NUMBER}, generateFilm);
-const filmComments = Array.from({length: FILM_CARDS_NUMBER}, generateComments);
+const filmComments = [];
+const filmCards = Array.from({length: FILM_CARDS_NUMBER}, () => generateFilm(filmComments));
 const filters = generateFilter(filmCards);
 
 const siteHeaderElement = document.querySelector('.header');
@@ -32,4 +32,6 @@ render(siteHeaderElement, new UserProfileView(), RenderPosition.BEFOREEND);
 render(siteFooterElement, new FooterStatisticsView(), RenderPosition.BEFOREEND);
 //renderElement(siteMainElement, new StatisticView().element, RenderPosition.BEFOREEND);
 
-movieBoardPresenter.init(filmCards, filmComments);
+movieBoardPresenter.init(filmCards);
+
+export {filmComments};

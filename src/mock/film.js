@@ -6,7 +6,7 @@ import {
   generateReleaseDate,
   generateDate,
   isFilmWatched,
-  getCommentsIdArray
+  //getCommentsIdArray
 } from '../utils/common';
 
 import {
@@ -31,6 +31,21 @@ import {
   MAX_COMMENTS_COUNT
 } from '../consts';
 
+import {nanoid} from 'nanoid';
+
+const getComment = (comments) => {
+  const comment = new Object();
+  comment.id = nanoid();
+  comment.text = getRandomArrayElement(TEXT_FRAGMENTS);
+  comment.emotion = getRandomArrayElement(EMOTIONS);
+  comment.author = getRandomArrayElement(NAMES);
+  comment.date = generateDate();
+
+  comments.push(comment);
+
+  return comment.id;
+};
+
 export const generateComments = () => {
   const comments = [];
   const commentsNumber = getRandomInteger(0, MAX_COMMENTS_COUNT);
@@ -49,7 +64,7 @@ export const generateComments = () => {
   return comments;
 };
 
-export const generateFilm = () => {
+export const generateFilm = (comments) => {
   const isWatched = isFilmWatched();
   const generateWatchingDate = () => {
     if (isWatched === false) {
@@ -60,6 +75,7 @@ export const generateFilm = () => {
   };
 
   return {
+    id: nanoid(),
     title: getRandomArrayElement(TITLES),
     alternativeTitle: getRandomArrayElement(TITLES),
     poster: getRandomArrayElement(POSTERS),
@@ -81,6 +97,6 @@ export const generateFilm = () => {
       watchingDate: generateWatchingDate(),
       favorite: Boolean(getRandomInteger(0, 1)),
     },
-    comments: getCommentsIdArray(MAX_COMMENTS_COUNT),
+    comments: Array(getRandomInteger(0, 5)).fill('').map(() => getComment(comments)),
   };
 };

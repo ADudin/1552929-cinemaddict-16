@@ -9,41 +9,79 @@ import FilmDetailsNewCommentView from '../view/popup/film-details-new-comment-vi
 import FilmDetailsCommentsListView from '../view/popup/film-details-comments-list.js';
 import CommentsView from '../view/popup/comments-view.js';
 
-import {render, remove} from '../utils/render.js';
+import {filmComments} from '../main.js';
+
+import {
+  render,
+  remove,
+  replace
+} from '../utils/render.js';
 
 import {RenderPosition} from '../consts.js';
 
 export default class MovieCardPresenter {
   #movieListContainer = null;
+  #changeData = null;
 
   #filmCardComponent = null;
-  #filmDetailsTopContainer = null;
   #documentBody = document.querySelector('body');
-  #filmDetailsSection = new FilmDetailsSectionView();
-  #filmDetailsForm = new FilmDetailsFormView();
-  #filmDetailsBottomContainer = new FilmDetailsBottomContainerView();
-  #filmDetailsCommentsWrap = new FilmDetailsCommentsWrapView();
-  #filmDetailsNewComment = new FilmDetailsNewCommentView();
-  #filmDetailsCommentsList = new FilmDetailsCommentsListView();
+  #filmDetailsSection = null;
+  #filmDetailsForm = null;
+  #filmDetailsTopContainer = null;
+  #filmDetailsBottomContainer = null;
+  #filmDetailsCommentsWrap = null;
+  #filmDetailsNewComment = null;
+  #filmDetailsCommentsList = null;
 
   #filmCard = null;
   #filmComments = [];
 
-  constructor(movieListContainer) {
+  constructor(movieListContainer, changeData) {
     this.#movieListContainer = movieListContainer;
+    this.#changeData = changeData;
   }
 
-  init = (filmCard, filmComments) => {
+  init = (filmCard) => {
     this.#filmCard = filmCard;
-    this.#filmComments = [...filmComments];
+    this.#filmComments = [];
+
+    const prevFilmCardComponent = this.#filmCardComponent;
+    const prevFilmDetailsComponent = this.#filmDetailsSection;
 
     this.#filmCardComponent = new FilmCardView(filmCard, filmComments);
+    this.#filmDetailsSection = new FilmDetailsSectionView();
+    this.#filmDetailsForm = new FilmDetailsFormView();
     this.#filmDetailsTopContainer = new FilmDetailsTopContainerView(filmCard);
+    this.#filmDetailsBottomContainer = new FilmDetailsBottomContainerView();
+    this.#filmDetailsCommentsWrap = new FilmDetailsCommentsWrapView();
+    this.#filmDetailsNewComment = new FilmDetailsNewCommentView();
+    this.#filmDetailsCommentsList = new FilmDetailsCommentsListView();
+
+    this.#filmCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
 
     this.#filmCardComponent.setShowPopupHandler(this.#handleFilmCardClick);
     this.#filmDetailsTopContainer.setCloseBtnClickHandler(this.#handleCloseBtnClick);
 
-    render(this.#movieListContainer, this.#filmCardComponent, RenderPosition.BEFOREEND);
+    if (prevFilmCardComponent === null || prevFilmDetailsComponent === null) {
+      render(this.#movieListContainer, this.#filmCardComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this.#movieListContainer.element.contains(prevFilmCardComponent.element)) {
+      replace(this.#filmCardComponent, prevFilmCardComponent);
+    }
+
+    if(this.#movieListContainer.element.contains(prevFilmDetailsComponent.element)) {
+      replace(this.#filmDetailsSection, prevFilmDetailsComponent);
+    }
+
+    remove(prevFilmCardComponent);
+    remove(prevFilmDetailsComponent);
+  }
+
+  destroy = () => {
+    remove(this.#filmCardComponent);
+    remove(this.#filmDetailsSection);
   }
 
   #showPopup = () => {
@@ -59,7 +97,7 @@ export default class MovieCardPresenter {
     render(this.#filmDetailsCommentsWrap, this.#filmDetailsCommentsList, RenderPosition.BEFOREEND);
     render(this.#filmDetailsCommentsWrap, this.#filmDetailsNewComment, RenderPosition.BEFOREEND);
 
-    const comments = this.#filmComments;
+    const comments = filmComments.filter((element) => this.#filmCard.comments.includes(element.id));
 
     for (let i = 0; i < comments.length; i++) {
       render(this.#filmDetailsCommentsList, new CommentsView(comments[i]), RenderPosition.BEFOREEND);
@@ -83,6 +121,10 @@ export default class MovieCardPresenter {
       evt.preventDefault();
       this.#closePopup();
     }
+  }
+
+  #handleFavoriteClick = () => {
+    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails,favorite: !this.#filmCard.userDetails.favorite}});
   }
 
   #handleFilmCardClick = () => {
