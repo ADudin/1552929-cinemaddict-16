@@ -91,13 +91,12 @@ export default class MovieCardPresenter {
     render(this.#filmDetailsForm, this.#filmDetailsBottomContainer, RenderPosition.BEFOREEND);
     render(this.#filmDetailsBottomContainer, this.#filmDetailsCommentsWrap, RenderPosition.BEFOREEND);
 
-    const filmDetailsCommentsTitle = new FilmDetailsCommentsTitleView(this.#filmComments);
+    const comments = filmComments.filter((element) => this.#filmCard.comments.includes(element.id));
+    const filmDetailsCommentsTitle = new FilmDetailsCommentsTitleView(comments);
 
     render(this.#filmDetailsCommentsWrap, filmDetailsCommentsTitle, RenderPosition.AFTERBEGIN);
     render(this.#filmDetailsCommentsWrap, this.#filmDetailsCommentsList, RenderPosition.BEFOREEND);
     render(this.#filmDetailsCommentsWrap, this.#filmDetailsNewComment, RenderPosition.BEFOREEND);
-
-    const comments = filmComments.filter((element) => this.#filmCard.comments.includes(element.id));
 
     for (let i = 0; i < comments.length; i++) {
       render(this.#filmDetailsCommentsList, new CommentsView(comments[i]), RenderPosition.BEFOREEND);
