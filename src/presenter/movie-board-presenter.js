@@ -64,6 +64,10 @@ export default class MovieBoardPresenter {
     this.#renderMovieBoard();
   }
 
+  #handleModeChange = () => {
+    this.#movieCardPresenter.forEach((presenter) => presenter.resetView());
+  }
+
   #handleFilmCardChange = (updatedFilmCard) => {
     //console.log(this.#filmCards);
     //console.log(updatedFilmCard);
@@ -77,7 +81,7 @@ export default class MovieBoardPresenter {
   }
 
   #renderFilmCard = (movieListContainer, filmCard, comments) => {
-    const movieCardPresenter = new MovieCardPresenter(movieListContainer, this.#handleFilmCardChange);
+    const movieCardPresenter = new MovieCardPresenter(movieListContainer, this.#handleFilmCardChange, this.#handleModeChange);
     movieCardPresenter.init(filmCard, comments);
     this.#movieCardPresenter.set(filmCard.id, movieCardPresenter);
   }

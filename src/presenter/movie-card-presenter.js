@@ -19,9 +19,15 @@ import {
 
 import {RenderPosition} from '../consts.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  SHOW: 'SHOW',
+};
+
 export default class MovieCardPresenter {
   #movieListContainer = null;
   #changeData = null;
+  #changeMode = null;
 
   #filmCardComponent = null;
   #documentBody = document.querySelector('body');
@@ -34,11 +40,13 @@ export default class MovieCardPresenter {
   #filmDetailsCommentsList = null;
 
   #filmCard = null;
+  #mode = Mode.DEFAULT;
   //#filmComments = [];
 
-  constructor(movieListContainer, changeData) {
+  constructor(movieListContainer, changeData, changeMode) {
     this.#movieListContainer = movieListContainer;
     this.#changeData = changeData;
+    this.#changeMode = changeMode;
   }
 
   init = (filmCard) => {
@@ -69,11 +77,11 @@ export default class MovieCardPresenter {
       return;
     }
 
-    if (this.#movieListContainer.element.contains(prevFilmCardComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#filmCardComponent, prevFilmCardComponent);
     }
 
-    if(this.#movieListContainer.element.contains(prevFilmDetailsComponent.element)) {
+    if(this.#mode === Mode.SHOW) {
       replace(this.#filmDetailsSection, prevFilmDetailsComponent);
     }
 
@@ -84,6 +92,12 @@ export default class MovieCardPresenter {
   destroy = () => {
     remove(this.#filmCardComponent);
     remove(this.#filmDetailsSection);
+  }
+
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#closePopup();
+    }
   }
 
   #showPopup = () => {
@@ -106,6 +120,8 @@ export default class MovieCardPresenter {
 
     this.#documentBody.classList.add('hide-overflow');
     document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#changeMode();
+    this.#mode = Mode.SHOW;
   }
 
   #closePopup = () => {
@@ -115,6 +131,7 @@ export default class MovieCardPresenter {
 
     this.#documentBody.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   }
 
   #escKeyDownHandler = (evt) => {
@@ -133,7 +150,7 @@ export default class MovieCardPresenter {
   }
 
   #handleAlreadyWatchedClick = () => {
-    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails, alreadyWatched: !this.#filmCard.userDetails.alreadyWatched}});
+    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.UserDetails, alreadyWatched: !this.#filmCard.userDetails.alreadyWatched}});
   }
 
   #handleFilmCardClick = () => {
