@@ -34,7 +34,7 @@ export default class MovieCardPresenter {
   #filmDetailsCommentsList = null;
 
   #filmCard = null;
-  #filmComments = [];
+  //#filmComments = [];
 
   constructor(movieListContainer, changeData) {
     this.#movieListContainer = movieListContainer;
@@ -43,7 +43,7 @@ export default class MovieCardPresenter {
 
   init = (filmCard) => {
     this.#filmCard = filmCard;
-    this.#filmComments = [];
+    //this.#filmComments = [];
 
     const prevFilmCardComponent = this.#filmCardComponent;
     const prevFilmDetailsComponent = this.#filmDetailsSection;
@@ -58,6 +58,8 @@ export default class MovieCardPresenter {
     this.#filmDetailsCommentsList = new FilmDetailsCommentsListView();
 
     this.#filmCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#filmCardComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
+    this.#filmCardComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
 
     this.#filmCardComponent.setShowPopupHandler(this.#handleFilmCardClick);
     this.#filmDetailsTopContainer.setCloseBtnClickHandler(this.#handleCloseBtnClick);
@@ -123,7 +125,15 @@ export default class MovieCardPresenter {
   }
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails,favorite: !this.#filmCard.userDetails.favorite}});
+    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails, favorite: !this.#filmCard.userDetails.favorite}});
+  }
+
+  #handleWatchlistClick = () => {
+    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails, watchlist: !this.#filmCard.userDetails.watchlist}});
+  }
+
+  #handleAlreadyWatchedClick = () => {
+    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails, alreadyWatched: !this.#filmCard.userDetails.alreadyWatched}});
   }
 
   #handleFilmCardClick = () => {
