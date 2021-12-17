@@ -68,9 +68,12 @@ export default class MovieCardPresenter {
     this.#filmCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmCardComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#filmCardComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
-
     this.#filmCardComponent.setShowPopupHandler(this.#handleFilmCardClick);
+
     this.#filmDetailsTopContainer.setCloseBtnClickHandler(this.#handleCloseBtnClick);
+    this.#filmDetailsTopContainer.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#filmDetailsTopContainer.setWatchlistClickHandler(this.#handleWatchlistClick);
+    this.#filmDetailsTopContainer.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
 
     if (prevFilmCardComponent === null || prevFilmDetailsComponent === null) {
       render(this.#movieListContainer, this.#filmCardComponent, RenderPosition.BEFOREEND);
@@ -82,6 +85,7 @@ export default class MovieCardPresenter {
     }
 
     if(this.#mode === Mode.SHOW) {
+      replace(this.#filmCardComponent, prevFilmCardComponent);
       replace(this.#filmDetailsSection, prevFilmDetailsComponent);
     }
 
