@@ -26,6 +26,7 @@ const Mode = {
 
 export default class MovieCardPresenter {
   #movieListContainer = null;
+  #popupContainer = null;
   #changeData = null;
   #changeMode = null;
 
@@ -41,41 +42,29 @@ export default class MovieCardPresenter {
 
   #filmCard = null;
   #mode = Mode.DEFAULT;
-  //#filmComments = [];
 
-  constructor(movieListContainer, changeData, changeMode) {
+  constructor(movieListContainer, popupContainer, changeData, changeMode) {
     this.#movieListContainer = movieListContainer;
+    this.#popupContainer = popupContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
   }
 
   init = (filmCard) => {
     this.#filmCard = filmCard;
-    //this.#filmComments = [];
 
     const prevFilmCardComponent = this.#filmCardComponent;
     const prevFilmDetailsComponent = this.#filmDetailsSection;
 
     this.#filmCardComponent = new FilmCardView(filmCard, filmComments);
-    this.#filmDetailsSection = new FilmDetailsSectionView();
-    this.#filmDetailsForm = new FilmDetailsFormView();
-    this.#filmDetailsTopContainer = new FilmDetailsTopContainerView(filmCard);
-    this.#filmDetailsBottomContainer = new FilmDetailsBottomContainerView();
-    this.#filmDetailsCommentsWrap = new FilmDetailsCommentsWrapView();
-    this.#filmDetailsNewComment = new FilmDetailsNewCommentView();
-    this.#filmDetailsCommentsList = new FilmDetailsCommentsListView();
+
 
     this.#filmCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmCardComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#filmCardComponent.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
     this.#filmCardComponent.setShowPopupHandler(this.#handleFilmCardClick);
 
-    this.#filmDetailsTopContainer.setCloseBtnClickHandler(this.#handleCloseBtnClick);
-    this.#filmDetailsTopContainer.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#filmDetailsTopContainer.setWatchlistClickHandler(this.#handleWatchlistClick);
-    this.#filmDetailsTopContainer.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
-
-    if (prevFilmCardComponent === null || prevFilmDetailsComponent === null) {
+    if (prevFilmCardComponent === null) {
       render(this.#movieListContainer, this.#filmCardComponent, RenderPosition.BEFOREEND);
       return;
     }
@@ -86,9 +75,8 @@ export default class MovieCardPresenter {
 
     if(this.#mode === Mode.SHOW) {
       replace(this.#filmCardComponent, prevFilmCardComponent);
+      this.#createPopup();
       replace(this.#filmDetailsSection, prevFilmDetailsComponent);
-      this.#changeMode();
-      this.#showPopup();
       this.#mode = Mode.SHOW;
     }
 
@@ -107,8 +95,15 @@ export default class MovieCardPresenter {
     }
   }
 
-  #showPopup = () => {
-    render(this.#movieListContainer, this.#filmDetailsSection, RenderPosition.AFTEREND);
+  #createPopup = () => {
+    this.#filmDetailsSection = new FilmDetailsSectionView();
+    this.#filmDetailsForm = new FilmDetailsFormView();
+    this.#filmDetailsTopContainer = new FilmDetailsTopContainerView(this.#filmCard);
+    this.#filmDetailsBottomContainer = new FilmDetailsBottomContainerView();
+    this.#filmDetailsCommentsWrap = new FilmDetailsCommentsWrapView();
+    this.#filmDetailsNewComment = new FilmDetailsNewCommentView();
+    this.#filmDetailsCommentsList = new FilmDetailsCommentsListView();
+
     render(this.#filmDetailsSection, this.#filmDetailsForm, RenderPosition.BEFOREEND);
     render(this.#filmDetailsForm, this.#filmDetailsTopContainer, RenderPosition.AFTERBEGIN);
     render(this.#filmDetailsForm, this.#filmDetailsBottomContainer, RenderPosition.BEFOREEND);
@@ -121,13 +116,25 @@ export default class MovieCardPresenter {
     render(this.#filmDetailsCommentsWrap, this.#filmDetailsCommentsList, RenderPosition.BEFOREEND);
     render(this.#filmDetailsCommentsWrap, this.#filmDetailsNewComment, RenderPosition.BEFOREEND);
 
+    this.#filmDetailsTopContainer.setCloseBtnClickHandler(this.#handleCloseBtnClick);
+    this.#filmDetailsTopContainer.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#filmDetailsTopContainer.setWatchlistClickHandler(this.#handleWatchlistClick);
+    this.#filmDetailsTopContainer.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
+
     for (let i = 0; i < comments.length; i++) {
       render(this.#filmDetailsCommentsList, new CommentsView(comments[i]), RenderPosition.BEFOREEND);
     }
+  }
+
+  #showPopup = () => {
+    this.#changeMode();
+
+    this.#createPopup();
+
+    render(this.#popupContainer, this.#filmDetailsSection, RenderPosition.BEFOREEND);
 
     this.#documentBody.classList.add('hide-overflow');
     document.addEventListener('keydown', this.#escKeyDownHandler);
-    this.#changeMode();
     this.#mode = Mode.SHOW;
   }
 
@@ -157,7 +164,7 @@ export default class MovieCardPresenter {
   }
 
   #handleAlreadyWatchedClick = () => {
-    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.UserDetails, alreadyWatched: !this.#filmCard.userDetails.alreadyWatched}});
+    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails, alreadyWatched: !this.#filmCard.userDetails.alreadyWatched}});
   }
 
   #handleFilmCardClick = () => {

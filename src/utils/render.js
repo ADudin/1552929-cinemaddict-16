@@ -52,7 +52,7 @@ export const replace = (newElement, oldElement) => {
 
   const newChild = newElement instanceof AbstractView ? newElement.element : newElement;
   const oldChild = oldElement instanceof AbstractView ? oldElement.element : oldElement;
-
+  const scrollPosition = oldChild.scrollTop;
   const parent = oldChild.parentElement;
 
   if (parent === null) {
@@ -60,4 +60,5 @@ export const replace = (newElement, oldElement) => {
   }
 
   parent.replaceChild(newChild, oldChild);
+  newChild.scrollTop = scrollPosition;
 };

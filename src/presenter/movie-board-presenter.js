@@ -43,6 +43,8 @@ export default class MovieBoardPresenter {
   #filmsComments = [];
   #renderFilmCardsCount = FILM_COUNT_PER_STEP;
   #movieCardPresenter = new Map();
+  #topRatedCardPresenter = new Map();
+  #mostCommentedCardPresenter = new Map();
 
   constructor(mainContainer) {
     this.#mainContainer = mainContainer;
@@ -66,29 +68,39 @@ export default class MovieBoardPresenter {
 
   #handleModeChange = () => {
     this.#movieCardPresenter.forEach((presenter) => presenter.resetView());
+    this.#topRatedCardPresenter.forEach((presenter) => presenter.resetView());
+    this.#mostCommentedCardPresenter.forEach((presenter) => presenter.resetView());
   }
 
   #handleFilmCardChange = (updatedFilmCard) => {
-    //console.log(this.#filmCards);
-    //console.log(updatedFilmCard);
     this.#filmCards = updateItem(this.#filmCards, updatedFilmCard);
-    //console.log(this.#filmCards);
-    this.#movieCardPresenter.get(updatedFilmCard.id).init(updatedFilmCard);
+
+    if (this.#movieCardPresenter.has(updatedFilmCard.id)) {
+      this.#movieCardPresenter.get(updatedFilmCard.id).init(updatedFilmCard);
+    }
+
+    if(this.#topRatedCardPresenter.has(updatedFilmCard.id)) {
+      this.#topRatedCardPresenter.get(updatedFilmCard.id).init(updatedFilmCard);
+    }
+
+    if (this.#mostCommentedCardPresenter.has(updatedFilmCard.id)) {
+      this.#mostCommentedCardPresenter.get(updatedFilmCard.id).init(updatedFilmCard);
+    }
   }
 
   #renderSortMenu = () => {
     render(this.#mainContainer, this.#sortMenuComponent, RenderPosition.AFTERBEGIN);
   }
 
-  #renderFilmCard = (movieListContainer, filmCard, comments) => {
-    const movieCardPresenter = new MovieCardPresenter(movieListContainer, this.#handleFilmCardChange, this.#handleModeChange);
+  #renderMovieCard = (movieListContainer, filmCard, comments, presenter) => {
+    const movieCardPresenter = new MovieCardPresenter(movieListContainer, this.#mainContainer, this.#handleFilmCardChange, this.#handleModeChange);
     movieCardPresenter.init(filmCard, comments);
-    this.#movieCardPresenter.set(filmCard.id, movieCardPresenter);
+    presenter.set(filmCard.id, movieCardPresenter);
   }
 
-  #renderFilmCards = (movieListContainer, filmCards, comments) => {
+  #renderFilmCards = (movieListContainer, filmCards, comments, presenter) => {
     for (let i = 0; i < Math.min(filmCards.length, FILM_COUNT_PER_STEP); i++) {
-      this.#renderFilmCard(movieListContainer, filmCards[i], comments[i]);
+      this.#renderMovieCard(movieListContainer, filmCards[i], comments[i], presenter);
     }
   }
 
@@ -98,7 +110,7 @@ export default class MovieBoardPresenter {
 
   #handleShowMoreBtnClick = () => {
     for (let i = 0; i < FILM_COUNT_PER_STEP; i++) {
-      this.#renderFilmCard(this.#allMoviesListContainer, this.#filmCards[i + this.#renderFilmCardsCount], this.#filmsComments[i + this.#renderFilmCardsCount]);
+      this.#renderMovieCard(this.#allMoviesListContainer, this.#filmCards[i + this.#renderFilmCardsCount], this.#filmsComments[i + this.#renderFilmCardsCount], this.#movieCardPresenter);
     }
 
     this.#renderFilmCardsCount += FILM_COUNT_PER_STEP;
@@ -115,7 +127,7 @@ export default class MovieBoardPresenter {
   }
 
   #renderAllMoviesList = () => {
-    this.#renderFilmCards(this.#allMoviesListContainer, this.#filmCards, this.#filmsComments);
+    this.#renderFilmCards(this.#allMoviesListContainer, this.#filmCards, this.#filmsComments, this.#movieCardPresenter);
 
     if (this.#filmCards.length > FILM_COUNT_PER_STEP) {
       this.#renderShowMoreBtn();
@@ -126,7 +138,7 @@ export default class MovieBoardPresenter {
     const topRatedFilms = getTopRatedFilms(this.#filmCards, TOP_RATED_FILMS_COUNT);
 
     for (let i = 0; i < TOP_RATED_FILMS_COUNT; i++) {
-      this.#renderFilmCard(this.#topRatedMoviesListContainer, topRatedFilms[i], this.#filmsComments[i]);
+      this.#renderMovieCard(this.#topRatedMoviesListContainer, topRatedFilms[i], this.#filmsComments[i], this.#topRatedCardPresenter);
     }
   }
 
@@ -134,7 +146,7 @@ export default class MovieBoardPresenter {
     const mostCommentedFilms = getMostCommentedFilms(this.#filmCards, MOST_COMMENTED_FILMS_COUNT);
 
     for (let i = 0; i < MOST_COMMENTED_FILMS_COUNT; i++) {
-      this.#renderFilmCard(this.#mostCommentedMoviesListContainer, mostCommentedFilms[i], this.#filmsComments[i]);
+      this.#renderMovieCard(this.#mostCommentedMoviesListContainer, mostCommentedFilms[i], this.#filmsComments[i], this.#mostCommentedCardPresenter);
     }
   }
 
