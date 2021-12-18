@@ -87,6 +87,9 @@ export default class MovieCardPresenter {
     if(this.#mode === Mode.SHOW) {
       replace(this.#filmCardComponent, prevFilmCardComponent);
       replace(this.#filmDetailsSection, prevFilmDetailsComponent);
+      this.#changeMode();
+      this.#showPopup();
+      this.#mode = Mode.SHOW;
     }
 
     remove(prevFilmCardComponent);
