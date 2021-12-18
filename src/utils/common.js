@@ -146,31 +146,27 @@ export const getCommentsIdArray = () => { // Создание массива id 
 };
 
 export const getTopRatedFilms = (films, filmsCount) => { // Сортировка карточек фильмов по рейтингу (модуль: main.js);
-  const sortedFilms = films.sort((a, b) => b.totalRating - a.totalRating).slice(0, filmsCount);
+  const sortedFilms = films.slice().sort((a, b) => b.totalRating - a.totalRating).slice(0, filmsCount);
 
   return sortedFilms;
 };
 
 export const getMostCommentedFilms = (films, filmsCount) => { // Сортировка карточек фильмов по количеству комментариев (модуль: main.js);
-  const sortedFilms = films.sort((a, b) => b.comments.length - a.comments.length).slice(0, filmsCount);
+  const sortedFilms = films.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, filmsCount);
 
   return sortedFilms;
 };
 
-/*
-const getIdValue = (object) => { // Служебная функция для функции getIdValueArray;
-  const idValue = object.id;
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
 
-  return idValue;
-};
-
-export const getIdValueArray = (array) => { // Плучение массива из id комментариев (модуль: film-view.js);
-  const idArray = [];
-
-  for (let i = 0; i < array.length; i++) {
-    idArray.push(getIdValue(array[i]));
+  if (index === -1) {
+    return items;
   }
 
-  return idArray;
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
 };
-*/
