@@ -153,3 +153,9 @@ export const TOP_RATED_FILMS_COUNT = 2;
 export const MOST_COMMENTED_FILMS_COUNT = 2;
 
 export const MAX_COMMENTS_COUNT = 5;
+
+export const SortType = {
+  DEFAULT: 'default',
+  BY_DATE: 'date-down',
+  BY_RATING: 'total-rating-down',
+};
