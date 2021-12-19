@@ -157,6 +157,12 @@ export const getMostCommentedFilms = (films, filmsCount) => { // Сортиро�
   return sortedFilms;
 };
 
+export const getSortedByDateFilms = (films, filmsCount) => {
+  const sortedFilms = films.slice().sort((a, b) => b.release.date - a.release.date).slice(0, filmsCount);
+
+  return sortedFilms;
+};
+
 export const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
 
