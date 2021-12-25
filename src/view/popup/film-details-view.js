@@ -6,10 +6,8 @@ import {
   checkIsActiveClassNamePopup
 } from '../../utils/common';
 
-import FilmDetailsCommentsTitleView from './film-details-comments-title-view';
 import CommentsView from './comments-view';
-
-//import {updateItem} from '../../utils/common.js';
+import {EMOTIONS} from '../../consts';
 
 const renderGenres = (genresArray) => {
   const genres = [];
@@ -20,6 +18,14 @@ const renderGenres = (genresArray) => {
 
   return genres.join('');
 };
+
+const createEmojiItemTemplate = (emoji, card) => (
+  `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}"
+    value="${emoji}" ${card.activeEmoji === emoji ? 'checked' : ''}>
+  <label class="film-details__emoji-label" for="emoji-${emoji}">
+    <img data-emoji="${emoji}" src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
+  </label>`
+);
 
 const createFilmDetailsTemplate = (card, comments) => {
   const {
@@ -43,10 +49,9 @@ const createFilmDetailsTemplate = (card, comments) => {
   const alreadyWatchedClassName = userDetails.alreadyWatched;
   const favoriteClassName = userDetails.favorite;
 
-  const commentsTitle = new FilmDetailsCommentsTitleView(comments).template;
-  const commentsList = comments.map((comment) => new CommentsView(comment).template);
-
-  const defaultEmojiSrc = 'images/emoji/smile.png';
+  const commentsNumber = comments.length;
+  const commentsList = comments.map((comment) => new CommentsView(comment).template).join('');
+  const emojiList = EMOTIONS.map((emoji) => createEmojiItemTemplate(emoji, card)).join('');
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -121,7 +126,9 @@ const createFilmDetailsTemplate = (card, comments) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          ${commentsTitle}
+          <h3 class="film-details__comments-title">
+            Comments <span class="film-details__comments-count">${commentsNumber}</span>
+          </h3>
 
           <ul class="film-details__comments-list">
             ${commentsList}
@@ -129,7 +136,7 @@ const createFilmDetailsTemplate = (card, comments) => {
 
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label">
-              <img src="${defaultEmojiSrc}" width="55" height="55" alt="emoji-smile">
+              ${card.activeEmoji ? `<img src="./images/emoji/${card.activeEmoji}.png" width="55" height="55" alt="emoji-${card.activeEmoji}">` : ''}
             </div>
 
             <label class="film-details__comment-label">
@@ -137,25 +144,7 @@ const createFilmDetailsTemplate = (card, comments) => {
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-              <label class="film-details__emoji-label" for="emoji-smile">
-                <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-              <label class="film-details__emoji-label" for="emoji-sleeping">
-                <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-              <label class="film-details__emoji-label" for="emoji-puke">
-                <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-              <label class="film-details__emoji-label" for="emoji-angry">
-                <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-              </label>
+              ${emojiList}
             </div>
           </div>
         </section>
@@ -165,17 +154,28 @@ const createFilmDetailsTemplate = (card, comments) => {
 };
 
 export default class FilmDetailsView extends SmartView {
-  #card = null;
   #comments = null;
+  #activeEmoji = null;
 
-  constructor(card, comments) {
+  constructor (card, comments) {
     super();
-    this.#card = card;
+    this._data = FilmDetailsView.parseMovieToData(card);
     this.#comments = comments;
+    this.#activeEmoji = card.activeEmoji;
+
+    this.#setEmojiClickHandler();
   }
 
   get template() {
-    return createFilmDetailsTemplate(this.#card, this.#comments);
+    return createFilmDetailsTemplate(this._data, this.#comments, this.#activeEmoji);
+  }
+
+  restoreHandlers = () => {
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
+    this.setCloseBtnClickHandler(this._callback.click);
+    this.#setEmojiClickHandler();
   }
 
   setFavoriteClickHandler = (callback) => {
@@ -198,7 +198,7 @@ export default class FilmDetailsView extends SmartView {
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeClickHandler);
   }
 
-  setEmojiClickHandler = () => {
+  #setEmojiClickHandler = () => {
     this.element.querySelectorAll('.film-details__emoji-label img').forEach((item) => {
       item.addEventListener('click', this.#emojiClickHandler);
     });
@@ -206,17 +206,17 @@ export default class FilmDetailsView extends SmartView {
 
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.favoriteClick();
+    this._callback.favoriteClick(FilmDetailsView.parseDataToMovie(this._data));
   }
 
   #watchlistClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.watchlistClick();
+    this._callback.watchlistClick(FilmDetailsView.parseDataToMovie(this._data));
   }
 
   #alreadyWatchedClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.alreadyWatchedClick();
+    this._callback.alreadyWatchedClick(FilmDetailsView.parseDataToMovie(this._data));
   }
 
   #closeClickHandler = (evt) => {
@@ -225,7 +225,26 @@ export default class FilmDetailsView extends SmartView {
   }
 
   #emojiClickHandler = (evt) => {
-    const activeEmoji = this.element.querySelector('.film-details__add-emoji-label img');
-    activeEmoji.src = evt.target.src;
+    evt.preventDefault();
+    this.updateData({
+      activeEmoji: evt.target.dataset.emoji
+    });
+  }
+
+  static parseMovieToData = (movie) => ({
+    ...movie,
+    activeEmoji: movie.activeEmoji
+  });
+
+  static parseDataToMovie = (data) => {
+    const movie = {...data};
+
+    if (!movie) {
+      movie.activeEmoji = null;
+    }
+
+    delete movie.activeEmoji;
+
+    return movie;
   }
 }

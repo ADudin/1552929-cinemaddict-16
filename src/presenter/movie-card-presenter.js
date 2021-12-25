@@ -133,7 +133,7 @@ export default class MovieCardPresenter {
     this.#filmDetailsSection.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#filmDetailsSection.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
 
-    this.#filmDetailsSection.setEmojiClickHandler();
+    //this.#filmDetailsSection.setEmojiClickHandler();
     /*
     this.#filmDetailsTopContainer.setCloseBtnClickHandler(this.#handleCloseBtnClick);
     this.#filmDetailsTopContainer.setFavoriteClickHandler(this.#handleFavoriteClick);
