@@ -1,10 +1,15 @@
+import SmartView from './smart-view';
+
 import {
   getRuntimeFromMinutes,
   getReleaseDateForPopup,
   checkIsActiveClassNamePopup
 } from '../../utils/common';
 
-import AbstractView from '../abstract-view.js';
+import FilmDetailsCommentsTitleView from './film-details-comments-title-view';
+import CommentsView from './comments-view';
+
+//import {updateItem} from '../../utils/common.js';
 
 const renderGenres = (genresArray) => {
   const genres = [];
@@ -16,7 +21,7 @@ const renderGenres = (genresArray) => {
   return genres.join('');
 };
 
-const createFilmDetailsTopContainerTemplate = (card) => {
+const createFilmDetailsTemplate = (card, comments) => {
   const {
     title,
     alternativeTitle,
@@ -38,7 +43,14 @@ const createFilmDetailsTopContainerTemplate = (card) => {
   const alreadyWatchedClassName = userDetails.alreadyWatched;
   const favoriteClassName = userDetails.favorite;
 
-  return `<div class="film-details__top-container">
+  const commentsTitle = new FilmDetailsCommentsTitleView(comments).template;
+  const commentsList = comments.map((comment) => new CommentsView(comment).template);
+
+  const defaultEmojiSrc = 'images/emoji/smile.png';
+
+  return `<section class="film-details">
+    <form class="film-details__inner" action="" method="get">
+    <div class="film-details__top-container">
     <div class="film-details__close">
       <button class="film-details__close-btn" type="button">close</button>
     </div>
@@ -105,10 +117,54 @@ const createFilmDetailsTopContainerTemplate = (card) => {
       <button type="button" class="film-details__control-button film-details__control-button--watched ${checkIsActiveClassNamePopup(alreadyWatchedClassName)}" id="watched" name="watched">Already watched</button>
       <button type="button" class="film-details__control-button film-details__control-button--favorite ${checkIsActiveClassNamePopup(favoriteClassName)}" id="favorite" name="favorite">Add to favorites</button>
     </section>
-  </div>`;
+  </div>
+
+      <div class="film-details__bottom-container">
+        <section class="film-details__comments-wrap">
+          ${commentsTitle}
+
+          <ul class="film-details__comments-list">
+            ${commentsList}
+          </ul>
+
+          <div class="film-details__new-comment">
+            <div class="film-details__add-emoji-label">
+              <img src="${defaultEmojiSrc}" width="55" height="55" alt="emoji-smile">
+            </div>
+
+            <label class="film-details__comment-label">
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            </label>
+
+            <div class="film-details__emoji-list">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+              <label class="film-details__emoji-label" for="emoji-smile">
+                <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
+              </label>
+
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+              <label class="film-details__emoji-label" for="emoji-sleeping">
+                <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
+              </label>
+
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+              <label class="film-details__emoji-label" for="emoji-puke">
+                <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
+              </label>
+
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+              <label class="film-details__emoji-label" for="emoji-angry">
+                <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
+              </label>
+            </div>
+          </div>
+        </section>
+      </div>
+    </form>
+  </section>`;
 };
 
-export default class FilmDetailsTopContainerView extends AbstractView {
+export default class FilmDetailsView extends SmartView {
   #card = null;
   #comments = null;
 
@@ -119,7 +175,7 @@ export default class FilmDetailsTopContainerView extends AbstractView {
   }
 
   get template() {
-    return createFilmDetailsTopContainerTemplate(this.#card, this.#comments);
+    return createFilmDetailsTemplate(this.#card, this.#comments);
   }
 
   setFavoriteClickHandler = (callback) => {
@@ -142,6 +198,12 @@ export default class FilmDetailsTopContainerView extends AbstractView {
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeClickHandler);
   }
 
+  setEmojiClickHandler = () => {
+    this.element.querySelectorAll('.film-details__emoji-label img').forEach((item) => {
+      item.addEventListener('click', this.#emojiClickHandler);
+    });
+  }
+
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.favoriteClick();
@@ -160,5 +222,10 @@ export default class FilmDetailsTopContainerView extends AbstractView {
   #closeClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
+  }
+
+  #emojiClickHandler = (evt) => {
+    const activeEmoji = this.element.querySelector('.film-details__add-emoji-label img');
+    activeEmoji.src = evt.target.src;
   }
 }

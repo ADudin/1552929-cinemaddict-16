@@ -1,4 +1,5 @@
 import FilmCardView from '../view/film-card-view.js';
+/*
 import FilmDetailsSectionView from '../view/popup/film-details-section-view.js';
 import FilmDetailsFormView from '../view/popup/film-details-form-view.js';
 import FilmDetailsBottomContainerView from '../view/popup/film-details-bottom-container-view.js';
@@ -8,6 +9,8 @@ import FilmDetailsCommentsTitleView from '../view/popup/film-details-comments-ti
 import FilmDetailsNewCommentView from '../view/popup/film-details-new-comment-view.js';
 import FilmDetailsCommentsListView from '../view/popup/film-details-comments-list.js';
 import CommentsView from '../view/popup/comments-view.js';
+*/
+import FilmDetailsView from '../view/popup/film-details-view.js';
 
 import {filmComments} from '../main.js';
 
@@ -33,12 +36,14 @@ export default class MovieCardPresenter {
   #filmCardComponent = null;
   #documentBody = document.querySelector('body');
   #filmDetailsSection = null;
+  /*
   #filmDetailsForm = null;
   #filmDetailsTopContainer = null;
   #filmDetailsBottomContainer = null;
   #filmDetailsCommentsWrap = null;
   #filmDetailsNewComment = null;
   #filmDetailsCommentsList = null;
+  */
 
   #filmCard = null;
   #mode = Mode.DEFAULT;
@@ -96,6 +101,9 @@ export default class MovieCardPresenter {
   }
 
   #createPopup = () => {
+    const comments = filmComments.filter((element) => this.#filmCard.comments.includes(element.id));
+    this.#filmDetailsSection = new FilmDetailsView(this.#filmCard, comments);
+    /*
     this.#filmDetailsSection = new FilmDetailsSectionView();
     this.#filmDetailsForm = new FilmDetailsFormView();
     this.#filmDetailsTopContainer = new FilmDetailsTopContainerView(this.#filmCard);
@@ -103,27 +111,41 @@ export default class MovieCardPresenter {
     this.#filmDetailsCommentsWrap = new FilmDetailsCommentsWrapView();
     this.#filmDetailsNewComment = new FilmDetailsNewCommentView();
     this.#filmDetailsCommentsList = new FilmDetailsCommentsListView();
-
+    */
+    /*
     render(this.#filmDetailsSection, this.#filmDetailsForm, RenderPosition.BEFOREEND);
     render(this.#filmDetailsForm, this.#filmDetailsTopContainer, RenderPosition.AFTERBEGIN);
     render(this.#filmDetailsForm, this.#filmDetailsBottomContainer, RenderPosition.BEFOREEND);
     render(this.#filmDetailsBottomContainer, this.#filmDetailsCommentsWrap, RenderPosition.BEFOREEND);
-
+    */
+    /*
     const comments = filmComments.filter((element) => this.#filmCard.comments.includes(element.id));
     const filmDetailsCommentsTitle = new FilmDetailsCommentsTitleView(comments);
-
+    */
+    /*
     render(this.#filmDetailsCommentsWrap, filmDetailsCommentsTitle, RenderPosition.AFTERBEGIN);
     render(this.#filmDetailsCommentsWrap, this.#filmDetailsCommentsList, RenderPosition.BEFOREEND);
     render(this.#filmDetailsCommentsWrap, this.#filmDetailsNewComment, RenderPosition.BEFOREEND);
+    */
 
+    this.#filmDetailsSection.setCloseBtnClickHandler(this.#handleCloseBtnClick);
+    this.#filmDetailsSection.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#filmDetailsSection.setWatchlistClickHandler(this.#handleWatchlistClick);
+    this.#filmDetailsSection.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
+
+    this.#filmDetailsSection.setEmojiClickHandler();
+    /*
     this.#filmDetailsTopContainer.setCloseBtnClickHandler(this.#handleCloseBtnClick);
     this.#filmDetailsTopContainer.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmDetailsTopContainer.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#filmDetailsTopContainer.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
 
+    this.#filmDetailsNewComment.setEmojiClickHandler();
+
     for (let i = 0; i < comments.length; i++) {
       render(this.#filmDetailsCommentsList, new CommentsView(comments[i]), RenderPosition.BEFOREEND);
     }
+    */
   }
 
   #showPopup = () => {
@@ -140,8 +162,10 @@ export default class MovieCardPresenter {
 
   #closePopup = () => {
     remove(this.#filmDetailsSection);
+    /*
     remove(this.#filmDetailsCommentsWrap);
     remove(this.#filmDetailsCommentsList);
+    */
 
     this.#documentBody.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this.#escKeyDownHandler);
