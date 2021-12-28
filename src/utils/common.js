@@ -59,7 +59,7 @@ export const isFilmWatched = () => { // Генерация случайного 
   return isWatched;
 };
 
-export const getRuntimeFromMinutes = (mins) => { // Преобразование продолжительности фильма в заданный формат (модули: film-card-view.js, popup-view.js);
+export const getRuntimeFromMinutes = (mins) => { // Преобразование продолжительности фильма в заданный формат (модули: film-card-view.js, film-details-view.js);
   const HOURS_ABB = 'h ';
   const MINUTES_ABB = 'm';
   const hours = Math.trunc(mins / 60);
@@ -78,14 +78,14 @@ export const getRuntimeFromMinutes = (mins) => { // Преобразование
   return hours + HOURS_ABB + minutes + MINUTES_ABB;
 };
 
-export const getReleaseDateForPopup = (key) => { // Преобразование даты релиза в заданный формат (модули: popup-view.js);
+export const getReleaseDateForPopup = (key) => { // Преобразование даты релиза в заданный формат (модули: film-details-view.js);
   const releaseDate = key.date;
   const formattedReleaseDate = dayjs(releaseDate).format('DD MMMM YYYY');
 
   return formattedReleaseDate;
 };
 
-export const getCommentDate = (date) => { // Преобразование даты комментария в заданный формат (модуль: comment-view.js);
+export const getCommentDate = (date) => { // Преобразование даты комментария в заданный формат (модуль: comments-view.js);
   const commentDate = dayjs(date).format('YYYY/MM/DD HH:mm');
 
   return commentDate;
@@ -110,7 +110,7 @@ export const getFirstArrayElement = (array) => { // Получение перв�
   return genre;
 };
 
-export const checkIsActiveClassName = (key) => { // Проверка для добаления активного класса кнопкам (модуль: film-card-view.js, popup-view.js);
+export const checkIsActiveClassName = (key) => { // Проверка для добаления активного класса кнопкам (модуль: film-card-view.js, film-details-view.js);
   const className = '';
 
   if (key) {
@@ -121,7 +121,7 @@ export const checkIsActiveClassName = (key) => { // Проверка для до
   return className;
 };
 
-export const checkIsActiveClassNamePopup = (key) => { // Проверка для добаления активного класса кнопкам (модуль: popup-view.js);
+export const checkIsActiveClassNamePopup = (key) => { // Проверка для добаления активного класса кнопкам (модуль: film-details-view.js);
   const className = '';
 
   if (key) {
