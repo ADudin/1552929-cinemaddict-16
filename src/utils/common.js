@@ -162,7 +162,7 @@ export const getSortedByDateFilms = (films, filmsCount) => {
 
   return sortedFilms;
 };
-
+/*
 export const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
 
@@ -175,4 +175,4 @@ export const updateItem = (items, update) => {
     update,
     ...items.slice(index + 1),
   ];
-};
+};*/

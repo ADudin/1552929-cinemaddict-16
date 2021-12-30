@@ -9,7 +9,11 @@ import {
   replace
 } from '../utils/render.js';
 
-import {RenderPosition} from '../consts.js';
+import {
+  RenderPosition,
+  UserAction,
+  UpdateType
+} from '../consts.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -92,7 +96,6 @@ export default class MovieCardPresenter {
 
   #showPopup = () => {
     this.#changeMode();
-
     this.#createPopup();
 
     render(this.#popupContainer, this.#filmDetailsSection, RenderPosition.BEFOREEND);
@@ -118,15 +121,27 @@ export default class MovieCardPresenter {
   }
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails, favorite: !this.#filmCard.userDetails.favorite}});
+    this.#changeData(
+      UserAction.UPDATE_FILMCARD,
+      UpdateType.PATCH,
+      {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, favorite: !this.#filmCard.userDetails.favorite}}
+    );
   }
 
   #handleWatchlistClick = () => {
-    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails, watchlist: !this.#filmCard.userDetails.watchlist}});
+    this.#changeData(
+      UserAction.UPDATE_FILMCARD,
+      UpdateType.PATCH,
+      {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, watchlist: !this.#filmCard.userDetails.watchlist}}
+    );
   }
 
   #handleAlreadyWatchedClick = () => {
-    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails, alreadyWatched: !this.#filmCard.userDetails.alreadyWatched}});
+    this.#changeData(
+      UserAction.UPDATE_FILMCARD,
+      UpdateType.PATCH,
+      {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, alreadyWatched: !this.#filmCard.userDetails.alreadyWatched}}
+    );
   }
 
   #handleFilmCardClick = () => {
