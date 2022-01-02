@@ -92,6 +92,7 @@ export default class MovieCardPresenter {
     this.#filmDetailsSection.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmDetailsSection.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#filmDetailsSection.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
+    this.#filmDetailsSection.setDeleteCommentClickHandler(this.#handleDeleteCommentClick);
   }
 
   #showPopup = () => {
@@ -150,5 +151,17 @@ export default class MovieCardPresenter {
 
   #handleCloseBtnClick = () => {
     this.#closePopup();
+  }
+
+  #handleDeleteCommentClick = (commentToDelete) => {
+    const commentToDeleteIndex = this.#filmCard.comments.findIndex((item) => item.id === commentToDelete.id);
+    this.#filmCard.comments.splice(commentToDeleteIndex, 1);
+
+    this.#changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      {...this.#filmCard},
+      commentToDelete
+    );
   }
 }

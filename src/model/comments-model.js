@@ -20,8 +20,8 @@ export default class CommentsModel extends AbstractObsrvable {
     this._notify(updateType, update);
   }
 
-  deleteComment = (updateType, update) => {
-    const index = this.#comments.findIndex((comment) => comment.id === update.id);
+  deleteComment = (updateType, update, commentToDelete) => {
+    const index = this.#comments.findIndex((comment) => comment.id === commentToDelete.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
@@ -32,6 +32,6 @@ export default class CommentsModel extends AbstractObsrvable {
       ...this.#comments.slice(index + 1),
     ];
 
-    this._notify(updateType);
+    this._notify(updateType, update);
   }
 }

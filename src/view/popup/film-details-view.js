@@ -239,6 +239,20 @@ export default class FilmDetailsView extends SmartView {
     }, true);
   }
 
+  setDeleteCommentClickHandler = (callback) => {
+    this._callback.deleteCommentClick = callback;
+    this.element.querySelectorAll('.film-details__comment-delete').forEach((item) => {
+      item.addEventListener('click', this.#deleteCommentClickHandler);
+    });
+  }
+
+  #deleteCommentClickHandler = (evt) => {
+    evt.preventDefault();
+    const commentId = evt.target.dataset.commentId;
+    const commentToDeleteIndex = this.#comments.findIndex((comment) => comment.id === commentId);
+    this._callback.deleteCommentClick(this.#comments[commentToDeleteIndex]);
+  }
+
   static parseMovieToData = (movie) => ({
     ...movie,
     activeEmoji: movie.activeEmoji,

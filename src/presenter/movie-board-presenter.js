@@ -56,6 +56,7 @@ export default class MovieBoardPresenter {
     this.#commentsModel = commentsModel;
 
     this.#moviesModel.addObserver(this.#handleModelEvent);
+    this.#commentsModel.addObserver(this.#handleModelEvent);
   }
 
   get filmCards() {
@@ -93,7 +94,7 @@ export default class MovieBoardPresenter {
     this.#mostCommentedCardPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = (actionType, updateType, update, comment) => {
 
     switch (actionType) {
       case UserAction.UPDATE_FILMCARD:
@@ -103,7 +104,9 @@ export default class MovieBoardPresenter {
         this.#commentsModel.addComment(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
-        this.#commentsModel.deleteComment(updateType, update);
+        this.#commentsModel.deleteComment(updateType, update, comment);
+        this.#mostCommentedCardPresenter.forEach((presenter) => presenter.destroy());
+        this.#renderMostCommentedFilms();
         break;
     }
   }

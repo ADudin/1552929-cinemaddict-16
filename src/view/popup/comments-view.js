@@ -3,6 +3,7 @@ import AbstractView from '../abstract-view.js';
 
 const renderComment = (comment) => {
   const {
+    id,
     text,
     emotion,
     author,
@@ -18,22 +19,22 @@ const renderComment = (comment) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${getCommentDate(date)}</span>
-        <button class="film-details__comment-delete">Delete</button>
+        <button class="film-details__comment-delete" data-comment-id="${id}">Delete</button>
       </p>
     </div>
   </li>`;
 };
 
 export default class CommentsView extends AbstractView {
-  #comments = null;
+  #comment = null;
 
-  constructor(comments) {
+  constructor(comment) {
     super();
-    this.#comments = comments;
+    this.#comment = comment;
   }
 
   get template() {
 
-    return renderComment(this.#comments);
+    return renderComment(this.#comment);
   }
 }

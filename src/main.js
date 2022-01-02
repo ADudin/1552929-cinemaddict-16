@@ -5,8 +5,7 @@ import FooterStatisticsView from './view/footer-statistics-view.js';
 import MovieBoardPresenter from './presenter/movie-board-presenter.js';
 
 import {
-  generateFilm,
-  //generateComments,
+  generateFilm
 } from './mock/film.js';
 
 import {
@@ -42,6 +41,5 @@ render(siteFooterElement, new FooterStatisticsView(), RenderPosition.BEFOREEND);
 //renderElement(siteMainElement, new StatisticView().element, RenderPosition.BEFOREEND);
 
 movieBoardPresenter.init();
-//movieBoardPresenter.init(filmCards);
 
 export {filmComments};
