@@ -49,16 +49,14 @@ const createFilmCardTemplate = (card) => {
 
 export default class FilmCardView extends AbstractView {
   #card = null;
-  #comments = null;
 
-  constructor(card, comments) {
+  constructor(card) {
     super();
     this.#card = card;
-    this.#comments = comments;
   }
 
   get template() {
-    return createFilmCardTemplate(this.#card, this.#comments);
+    return createFilmCardTemplate(this.#card);
   }
 
   setFavoriteClickHandler = (callback) => {

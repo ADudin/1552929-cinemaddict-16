@@ -11,12 +11,11 @@ export default class CommentsModel extends AbstractObsrvable {
     return this.#comments;
   }
 
-  addComment = (updateType, update) => {
+  addComment = (updateType, update, newComment) => {
     this.#comments = [
-      update,
+      newComment,
       ...this.#comments,
     ];
-
     this._notify(updateType, update);
   }
 

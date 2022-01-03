@@ -42,4 +42,6 @@ render(siteFooterElement, new FooterStatisticsView(), RenderPosition.BEFOREEND);
 
 movieBoardPresenter.init();
 
-export {filmComments};
+export {commentsModel};
+//export {filmComments};
+//console.log(filmComments);

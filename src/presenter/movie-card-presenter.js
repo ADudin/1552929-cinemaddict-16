@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card-view.js';
 import FilmDetailsView from '../view/popup/film-details-view.js';
 
-import {filmComments} from '../main.js';
+import {commentsModel} from '../main.js';
 
 import {
   render,
@@ -46,7 +46,7 @@ export default class MovieCardPresenter {
     const prevFilmCardComponent = this.#filmCardComponent;
     const prevFilmDetailsComponent = this.#filmDetailsSection;
 
-    this.#filmCardComponent = new FilmCardView(filmCard, filmComments);
+    this.#filmCardComponent = new FilmCardView(this.#filmCard, commentsModel.comments);
 
     this.#filmCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmCardComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
@@ -85,7 +85,7 @@ export default class MovieCardPresenter {
   }
 
   #createPopup = () => {
-    const comments = filmComments.filter((element) => this.#filmCard.comments.includes(element.id));
+    const comments = commentsModel.comments.filter((element) => this.#filmCard.comments.includes(element.id));
     this.#filmDetailsSection = new FilmDetailsView(this.#filmCard, comments);
 
     this.#filmDetailsSection.setCloseBtnClickHandler(this.#handleCloseBtnClick);
@@ -93,6 +93,7 @@ export default class MovieCardPresenter {
     this.#filmDetailsSection.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#filmDetailsSection.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
     this.#filmDetailsSection.setDeleteCommentClickHandler(this.#handleDeleteCommentClick);
+    this.#filmDetailsSection.setAddNewCommentEventHandler(this.#handleAddNewCommentEvent);
   }
 
   #showPopup = () => {
@@ -154,14 +155,28 @@ export default class MovieCardPresenter {
   }
 
   #handleDeleteCommentClick = (commentToDelete) => {
-    const commentToDeleteIndex = this.#filmCard.comments.findIndex((item) => item.id === commentToDelete.id);
-    this.#filmCard.comments.splice(commentToDeleteIndex, 1);
-
+    const newComments = [];
+    for (let i = 0; i < this.#filmCard.comments.length; i++) {
+      if (this.#filmCard.comments[i] !== commentToDelete.id) {
+        newComments.push(this.#filmCard.comments[i]);
+      }
+    }
+    this.#filmCard.comments = newComments;
     this.#changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
       {...this.#filmCard},
       commentToDelete
+    );
+  }
+
+  #handleAddNewCommentEvent = (newComment) => {
+    this.#filmCard.comments.push(newComment.id);
+    this.#changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.PATCH,
+      {...this.#filmCard},
+      newComment
     );
   }
 }

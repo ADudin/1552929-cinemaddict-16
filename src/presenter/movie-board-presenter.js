@@ -101,12 +101,10 @@ export default class MovieBoardPresenter {
         this.#moviesModel.updateFilmCard(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
-        this.#commentsModel.addComment(updateType, update);
+        this.#commentsModel.addComment(updateType, update, comment);
         break;
       case UserAction.DELETE_COMMENT:
         this.#commentsModel.deleteComment(updateType, update, comment);
-        this.#mostCommentedCardPresenter.forEach((presenter) => presenter.destroy());
-        this.#renderMostCommentedFilms();
         break;
     }
   }
@@ -125,6 +123,7 @@ export default class MovieBoardPresenter {
 
         if (this.#mostCommentedCardPresenter.has(data.id)) {
           this.#mostCommentedCardPresenter.get(data.id).init(data);
+          this.#mostCommentedCardPresenter.clear();
         }
         break;
       case UpdateType.MINOR:
