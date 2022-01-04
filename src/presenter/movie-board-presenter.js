@@ -13,6 +13,7 @@ import {
   SortType,
   UserAction,
   UpdateType,
+  FilterType
 } from '../consts.js';
 
 import {
@@ -26,15 +27,18 @@ import {
   remove
 } from '../utils/render.js';
 
+import {filter} from '../utils/filter.js';
+
 import MovieCardPresenter from './movie-card-presenter.js';
 
 export default class MovieBoardPresenter {
   #mainContainer = null;
   #moviesModel = [];
   #commentsModel = [];
+  #filterModel = null;
 
   #filmSectionComponent = new FilmSectionView();
-  #noFilmsComponent = new NoFilmsView();
+  #noFilmsComponent = null;
   #sortMenuComponent = null;
   #allMoviesListComponent = new FilmsListView('','visually-hidden', 'All movies. Upcoming');
   #topRatedMoviesListComponent = new FilmsListView('films-list--extra', '','Top rated');
@@ -49,25 +53,32 @@ export default class MovieBoardPresenter {
   #topRatedCardPresenter = new Map();
   #mostCommentedCardPresenter = new Map();
   #currentSortType = SortType.DEFAULT;
+  #filterType = FilterType.ALL;
 
-  constructor(mainContainer, moviesModel, commentsModel) {
+  constructor(mainContainer, moviesModel, commentsModel, filterModel) {
     this.#mainContainer = mainContainer;
     this.#moviesModel = moviesModel;
     this.#commentsModel = commentsModel;
+    this.#filterModel = filterModel;
 
     this.#moviesModel.addObserver(this.#handleModelEvent);
     this.#commentsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get filmCards() {
+    this.#filterType = this.#filterModel.filter;
+    const filmCards = this.#moviesModel.filmCards;
+    const filteredFilmCards = filter[this.#filterType](filmCards);
+
     switch (this.#currentSortType) {
       case SortType.BY_DATE:
-        return getSortedByDateFilms(this.#moviesModel.filmCards, this.#moviesModel.filmCards.length);
+        return getSortedByDateFilms(filteredFilmCards, filteredFilmCards.length);
       case SortType.BY_RATING:
-        return getTopRatedFilms(this.#moviesModel.filmCards, this.#moviesModel.filmCards.length);
+        return getTopRatedFilms(filteredFilmCards.filmCards, filteredFilmCards.length);
     }
 
-    return this.#moviesModel.filmCards;
+    return filteredFilmCards;
   }
 
   get filmsComments() {
@@ -123,7 +134,6 @@ export default class MovieBoardPresenter {
 
         if (this.#mostCommentedCardPresenter.has(data.id)) {
           this.#mostCommentedCardPresenter.get(data.id).init(data);
-          this.#mostCommentedCardPresenter.clear();
         }
         break;
       case UpdateType.MINOR:
@@ -131,6 +141,8 @@ export default class MovieBoardPresenter {
         this.#renderMovieBoard();
         break;
       case UpdateType.MAJOR:
+        this.#clearMovieBoard({resetRenderedFilmCardsCount: true, resetSortType: true});
+        this.#renderMovieBoard();
         break;
     }
   }
@@ -152,6 +164,9 @@ export default class MovieBoardPresenter {
   }
 
   #renderMovieCard = (movieListContainer, filmCard, comments, presenter) => {
+    if (!filmCard) {  //Проверка нужна на случай, если количество карточек для отрисовки меньше FILM_COUNT_PER_STEP;
+      return;
+    }
     const movieCardPresenter = new MovieCardPresenter(movieListContainer, this.#mainContainer, this.#handleViewAction, this.#handleModeChange);
     movieCardPresenter.init(filmCard, comments);
     presenter.set(filmCard.id, movieCardPresenter);
@@ -164,7 +179,8 @@ export default class MovieBoardPresenter {
   }
 
   #renderNoFilmCards = () => {
-    render(this.#mainContainer, this.#noFilmsComponent, RenderPosition.BEFOREEND);
+    this.#noFilmsComponent = new NoFilmsView(this.#filterType);
+    render(this.#mainContainer, this.#noFilmsComponent, RenderPosition.AFTERBEGIN);
   }
 
   #handleShowMoreBtnClick = () => {
@@ -218,7 +234,11 @@ export default class MovieBoardPresenter {
     this.#mostCommentedCardPresenter.clear();
 
     remove(this.#sortMenuComponent);
-    remove(this.#noFilmsComponent);
+
+    if (this.#noFilmsComponent) {
+      remove(this.#noFilmsComponent);
+    }
+
     remove(this.#showMoreBtnComponent);
 
     if (resetRenderedFilmCardsCount) {
