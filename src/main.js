@@ -1,4 +1,3 @@
-//import SiteMenuView from './view/site-menu-view.js';
 import UserProfileView from './view/user-profile-view.js';
 import FooterStatisticsView from './view/footer-statistics-view.js';
 //import StatisticView from './view/statistic-view.js';
@@ -14,7 +13,6 @@ import {
   FILM_CARDS_NUMBER,
 } from './consts.js';
 
-//import {generateFilter} from './mock/filter.js';
 import {render} from './utils/render.js';
 
 import MoviesModel from './model/movies-model.js';
@@ -23,29 +21,6 @@ import FilterModel from './model/filter-model.js';
 
 const filmComments = [];
 const filmCards = Array.from({length: FILM_CARDS_NUMBER}, () => generateFilm(filmComments));
-/*
-const filters = [
-  {
-    type: 'all',
-    name: 'all movies',
-    count: 0,
-  },
-  {
-    type: 'watchlist',
-    name: 'watchlist',
-    count: 0,
-  },
-  {
-    type: 'history',
-    name: 'history',
-    count: 0,
-  },
-  {
-    type: 'favorites',
-    name: 'favorites',
-    count: 0,
-  }
-];*/
 
 const moviesModel = new MoviesModel();
 moviesModel.filmCards = filmCards;
@@ -62,7 +37,6 @@ const siteFooterElement = document.querySelector('.footer');
 const movieBoardPresenter = new MovieBoardPresenter(siteMainElement, moviesModel, commentsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, moviesModel);
 
-//render(siteMainElement, new SiteMenuView(filters, 'all'), RenderPosition.BEFOREBEGIN);
 render(siteHeaderElement, new UserProfileView(), RenderPosition.BEFOREEND);
 render(siteFooterElement, new FooterStatisticsView(), RenderPosition.BEFOREEND);
 //renderElement(siteMainElement, new StatisticView().element, RenderPosition.BEFOREEND);

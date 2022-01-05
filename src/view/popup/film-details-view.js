@@ -1,3 +1,4 @@
+import he from 'he';
 import SmartView from './smart-view';
 
 import {
@@ -256,7 +257,7 @@ export default class FilmDetailsView extends SmartView {
   #commentInputHandler = (evt) => {
     evt.preventDefault();
     this.updateData({
-      commentText: evt.target.value
+      commentText: he.encode(evt.target.value)
     }, true);
   }
 
