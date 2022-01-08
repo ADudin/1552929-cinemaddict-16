@@ -75,7 +75,7 @@ export default class MovieCardPresenter {
 
   destroy = () => {
     remove(this.#filmCardComponent);
-    remove(this.#filmDetailsSection);
+    //remove(this.#filmDetailsSection);
   }
 
   resetView = () => {

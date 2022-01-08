@@ -126,9 +126,6 @@ export default class MovieBoardPresenter {
       case UpdateType.PATCH:
         if (this.#movieCardPresenter.has(data.id)) {
           this.#movieCardPresenter.get(data.id).init(data);
-          /* Попытка реализовать удаление карточки фильма из списка,
-          при изменении значения ключа у карточки фильма в отфильтрованном по значению этого ключа списке
-          (проблема в самопроизвольном закрытии попапа)
 
           if (this.#filterType === FilterType.WATCHLIST && data.userDetails.watchlist === false) {
             this.#clearMovieBoard();
@@ -144,7 +141,6 @@ export default class MovieBoardPresenter {
             this.#clearMovieBoard();
             this.#renderMovieBoard();
           }
-          */
         }
 
         if(this.#topRatedCardPresenter.has(data.id)) {
@@ -153,6 +149,9 @@ export default class MovieBoardPresenter {
 
         if (this.#mostCommentedCardPresenter.has(data.id)) {
           this.#mostCommentedCardPresenter.get(data.id).init(data);
+          this.#mostCommentedCardPresenter.forEach((presenter) => presenter.destroy());
+          this.#mostCommentedCardPresenter.clear();
+          this.#renderMostCommentedFilms();
         }
         break;
       case UpdateType.MINOR:
