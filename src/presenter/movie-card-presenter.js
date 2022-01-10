@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card-view.js';
 import FilmDetailsView from '../view/popup/film-details-view.js';
 
-import {filmComments} from '../main.js';
+import {commentsModel} from '../main.js';
 
 import {
   render,
@@ -9,7 +9,11 @@ import {
   replace
 } from '../utils/render.js';
 
-import {RenderPosition} from '../consts.js';
+import {
+  RenderPosition,
+  UserAction,
+  UpdateType
+} from '../consts.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -42,7 +46,7 @@ export default class MovieCardPresenter {
     const prevFilmCardComponent = this.#filmCardComponent;
     const prevFilmDetailsComponent = this.#filmDetailsSection;
 
-    this.#filmCardComponent = new FilmCardView(filmCard, filmComments);
+    this.#filmCardComponent = new FilmCardView(this.#filmCard, commentsModel.comments);
 
     this.#filmCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmCardComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
@@ -71,7 +75,7 @@ export default class MovieCardPresenter {
 
   destroy = () => {
     remove(this.#filmCardComponent);
-    remove(this.#filmDetailsSection);
+    //remove(this.#filmDetailsSection);
   }
 
   resetView = () => {
@@ -81,18 +85,19 @@ export default class MovieCardPresenter {
   }
 
   #createPopup = () => {
-    const comments = filmComments.filter((element) => this.#filmCard.comments.includes(element.id));
+    const comments = commentsModel.comments.filter((element) => this.#filmCard.comments.includes(element.id));
     this.#filmDetailsSection = new FilmDetailsView(this.#filmCard, comments);
 
     this.#filmDetailsSection.setCloseBtnClickHandler(this.#handleCloseBtnClick);
     this.#filmDetailsSection.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmDetailsSection.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#filmDetailsSection.setAlreadyWatchedClickHandler(this.#handleAlreadyWatchedClick);
+    this.#filmDetailsSection.setDeleteCommentClickHandler(this.#handleDeleteCommentClick);
+    this.#filmDetailsSection.setAddNewCommentEventHandler(this.#handleAddNewCommentEvent);
   }
 
   #showPopup = () => {
     this.#changeMode();
-
     this.#createPopup();
 
     render(this.#popupContainer, this.#filmDetailsSection, RenderPosition.BEFOREEND);
@@ -118,15 +123,27 @@ export default class MovieCardPresenter {
   }
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails, favorite: !this.#filmCard.userDetails.favorite}});
+    this.#changeData(
+      UserAction.UPDATE_FILMCARD,
+      UpdateType.PATCH,
+      {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, favorite: !this.#filmCard.userDetails.favorite}}
+    );
   }
 
   #handleWatchlistClick = () => {
-    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails, watchlist: !this.#filmCard.userDetails.watchlist}});
+    this.#changeData(
+      UserAction.UPDATE_FILMCARD,
+      UpdateType.PATCH,
+      {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, watchlist: !this.#filmCard.userDetails.watchlist}}
+    );
   }
 
   #handleAlreadyWatchedClick = () => {
-    this.#changeData({...this.#filmCard, userDetails:{...this.#filmCard.userDetails, alreadyWatched: !this.#filmCard.userDetails.alreadyWatched}});
+    this.#changeData(
+      UserAction.UPDATE_FILMCARD,
+      UpdateType.PATCH,
+      {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, alreadyWatched: !this.#filmCard.userDetails.alreadyWatched}}
+    );
   }
 
   #handleFilmCardClick = () => {
@@ -135,5 +152,31 @@ export default class MovieCardPresenter {
 
   #handleCloseBtnClick = () => {
     this.#closePopup();
+  }
+
+  #handleDeleteCommentClick = (commentToDelete) => {
+    const newComments = [];
+    for (let i = 0; i < this.#filmCard.comments.length; i++) {
+      if (this.#filmCard.comments[i] !== commentToDelete.id) {
+        newComments.push(this.#filmCard.comments[i]);
+      }
+    }
+    this.#filmCard.comments = newComments;
+    this.#changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      {...this.#filmCard},
+      commentToDelete
+    );
+  }
+
+  #handleAddNewCommentEvent = (newComment) => {
+    this.#filmCard.comments.push(newComment.id);
+    this.#changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.PATCH,
+      {...this.#filmCard},
+      newComment
+    );
   }
 }

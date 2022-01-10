@@ -159,3 +159,22 @@ export const SortType = {
   BY_DATE: 'date-down',
   BY_RATING: 'total-rating-down',
 };
+
+export const UserAction = {
+  UPDATE_FILMCARD: 'UPDATE_FILMCARD',
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export const FilterType = {
+  ALL: 'ALL',
+  WATCHLIST: 'WATCHLIST',
+  HISTORY: 'HISTORY',
+  FAVORITE: 'FAVORITE',
+};
