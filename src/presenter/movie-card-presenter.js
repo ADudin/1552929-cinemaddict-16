@@ -12,7 +12,8 @@ import {
 import {
   RenderPosition,
   UserAction,
-  UpdateType
+  UpdateType,
+  FilterType
 } from '../consts.js';
 
 const Mode = {
@@ -32,12 +33,14 @@ export default class MovieCardPresenter {
 
   #filmCard = null;
   #mode = Mode.DEFAULT;
+  #filterType = null;
 
-  constructor(movieListContainer, popupContainer, changeData, changeMode) {
+  constructor(movieListContainer, popupContainer, changeData, changeMode, filterType) {
     this.#movieListContainer = movieListContainer;
     this.#popupContainer = popupContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
+    this.#filterType = filterType;
   }
 
   init = (filmCard) => {
@@ -125,7 +128,7 @@ export default class MovieCardPresenter {
   #handleFavoriteClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILMCARD,
-      UpdateType.PATCH,
+      this.#filterType === FilterType.FAVORITE && this.#filmCard.userDetails.favorite === true ? UpdateType.MINOR : UpdateType.PATCH,
       {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, favorite: !this.#filmCard.userDetails.favorite}}
     );
   }
@@ -133,7 +136,7 @@ export default class MovieCardPresenter {
   #handleWatchlistClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILMCARD,
-      UpdateType.PATCH,
+      this.#filterType === FilterType.WATCHLIST && this.#filmCard.userDetails.watchlist === true ? UpdateType.MINOR : UpdateType.PATCH,
       {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, watchlist: !this.#filmCard.userDetails.watchlist}}
     );
   }
@@ -141,7 +144,7 @@ export default class MovieCardPresenter {
   #handleAlreadyWatchedClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILMCARD,
-      UpdateType.PATCH,
+      this.#filterType === FilterType.HISTORY && this.#filmCard.userDetails.alreadyWatched === true ? UpdateType.MINOR : UpdateType.PATCH,
       {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, alreadyWatched: !this.#filmCard.userDetails.alreadyWatched}}
     );
   }
