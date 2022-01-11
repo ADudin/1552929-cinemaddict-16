@@ -177,4 +177,5 @@ export const FilterType = {
   WATCHLIST: 'WATCHLIST',
   HISTORY: 'HISTORY',
   FAVORITE: 'FAVORITE',
+  STATS: 'STATS',
 };

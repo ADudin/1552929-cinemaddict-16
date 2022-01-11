@@ -9,6 +9,7 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
 };
 
 const createSiteMenuTemplate = (filterItems, currentFilterType) => {
+  const statsType = 'STATS';
   const filterItemsTemplate = filterItems
     .map((filter) => createFilterItemTemplate(filter, currentFilterType))
     .join('');
@@ -17,7 +18,7 @@ const createSiteMenuTemplate = (filterItems, currentFilterType) => {
     <div class="main-navigation__items">
       ${filterItemsTemplate}
     </div>
-    <a href="#stats" class="main-navigation__additional">Stats</a>
+    <a href="#stats" class="main-navigation__additional ${currentFilterType === statsType ? 'main-navigation__additional--active' : ''}" data-type="${statsType}">Stats</a>
   </nav>`;
 };
 
@@ -38,6 +39,7 @@ export default class SiteMenuView extends AbstractView {
   setFilterTypeChangeHandler = (callback) => {
     this._callback.filterTypeChange = callback;
     this.element.querySelectorAll('.main-navigation__item').forEach((item) => item.addEventListener('click', this.#handleFilterTypeChange));
+    this.element.querySelector('.main-navigation__additional').addEventListener('click', this.#handleFilterTypeChange);
   }
 
   #handleFilterTypeChange = (evt) => {

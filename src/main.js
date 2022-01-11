@@ -1,6 +1,6 @@
 import UserProfileView from './view/user-profile-view.js';
 import FooterStatisticsView from './view/footer-statistics-view.js';
-//import StatisticView from './view/statistic-view.js';
+import StatisticView from './view/statistic-view.js';
 import MovieBoardPresenter from './presenter/movie-board-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 
@@ -11,9 +11,10 @@ import {
 import {
   RenderPosition,
   FILM_CARDS_NUMBER,
+  FilterType,
 } from './consts.js';
 
-import {render} from './utils/render.js';
+import {remove, render} from './utils/render.js';
 
 import MoviesModel from './model/movies-model.js';
 import CommentsModel from './model/comments-model.js';
@@ -37,11 +38,24 @@ const siteFooterElement = document.querySelector('.footer');
 const movieBoardPresenter = new MovieBoardPresenter(siteMainElement, moviesModel, commentsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, moviesModel);
 
+let statsComponent = null;
+
 render(siteHeaderElement, new UserProfileView(), RenderPosition.BEFOREEND);
 render(siteFooterElement, new FooterStatisticsView(), RenderPosition.BEFOREEND);
-//renderElement(siteMainElement, new StatisticView().element, RenderPosition.BEFOREEND);
 
 filterPresenter.init();
 movieBoardPresenter.init();
 
-export {commentsModel};
+const handleSiteMenuClick = (filterType) => {
+  switch(filterType) {
+    case FilterType.STATS:
+      //убрать MovieBoardPresenter
+      statsComponent = new StatisticView();
+      render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
+      break;
+    default:
+      remove(statsComponent);
+  }
+};
+
+export {commentsModel, handleSiteMenuClick};

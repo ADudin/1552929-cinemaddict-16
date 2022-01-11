@@ -13,6 +13,8 @@ import {
 
 import {filter} from '../utils/filter';
 
+import {handleSiteMenuClick} from '../main';
+
 export default class FilterPresenter {
   #filterContainer = null;
   #filterModel = null;
@@ -82,5 +84,6 @@ export default class FilterPresenter {
     }
 
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
+    handleSiteMenuClick(filterType);
   }
 }
