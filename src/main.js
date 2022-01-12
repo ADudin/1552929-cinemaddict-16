@@ -49,12 +49,15 @@ movieBoardPresenter.init();
 const handleSiteMenuClick = (filterType) => {
   switch(filterType) {
     case FilterType.STATS:
-      //убрать MovieBoardPresenter
+      movieBoardPresenter.destroy();
       statsComponent = new StatisticView();
       render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
       break;
     default:
       remove(statsComponent);
+      movieBoardPresenter.destroy();
+      movieBoardPresenter.init();
+      break;
   }
 };
 

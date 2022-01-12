@@ -99,6 +99,14 @@ export default class MovieBoardPresenter {
     this.#renderMovieBoard();
   }
 
+  destroy = () => {
+    this.#clearMovieBoard({resetRenderedFilmCardsCount: true, resetSortType: true});
+    remove(this.#filmSectionComponent);
+    this.#moviesModel.removeObserver(this.#handleModelEvent);
+    this.#commentsModel.removeObserver(this.#handleModelEvent);
+    this.#filterModel.removeObserver(this.#handleModelEvent);
+  }
+
   #handleModeChange = () => {
     this.#movieCardPresenter.forEach((presenter) => presenter.resetView());
     this.#topRatedCardPresenter.forEach((presenter) => presenter.resetView());
