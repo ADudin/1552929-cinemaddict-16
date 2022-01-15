@@ -112,10 +112,11 @@ export const getFirstArrayElement = (array) => { // Получение перв�
 
 export const checkIsActiveClassName = (key) => { // Проверка для добаления активного класса кнопкам (модуль: film-card-view.js, film-details-view.js);
   const className = '';
+  const activeClassName = 'film-card__controls-item--active';
 
   if (key) {
 
-    return 'film-card__controls-item--active';
+    return activeClassName;
   }
 
   return className;
@@ -162,17 +163,3 @@ export const getSortedByDateFilms = (films, filmsCount) => {
 
   return sortedFilms;
 };
-/*
-export const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};*/

@@ -11,7 +11,7 @@ import {
 import {
   RenderPosition,
   FILM_CARDS_NUMBER,
-  FilterType,
+  ScreenModeType,
 } from './consts.js';
 
 import {remove, render} from './utils/render.js';
@@ -36,29 +36,28 @@ const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
 const movieBoardPresenter = new MovieBoardPresenter(siteMainElement, moviesModel, commentsModel, filterModel);
-const filterPresenter = new FilterPresenter(siteMainElement, filterModel, moviesModel);
 
 let statsComponent = null;
+
+const handleSiteMenuClick = (modeType) => {
+
+  if (modeType === ScreenModeType.STATISTIC) {
+    movieBoardPresenter.destroy();
+    statsComponent = new StatisticView();
+    render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
+  } else {
+    remove(statsComponent);
+    movieBoardPresenter.destroy();
+    movieBoardPresenter.init();
+  }
+};
+
+const filterPresenter = new FilterPresenter(siteMainElement, filterModel, moviesModel/*, screenModeModel*/);
 
 render(siteHeaderElement, new UserProfileView(), RenderPosition.BEFOREEND);
 render(siteFooterElement, new FooterStatisticsView(), RenderPosition.BEFOREEND);
 
 filterPresenter.init();
 movieBoardPresenter.init();
-
-const handleSiteMenuClick = (filterType) => {
-  switch(filterType) {
-    case FilterType.STATS:
-      movieBoardPresenter.destroy();
-      statsComponent = new StatisticView();
-      render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
-      break;
-    default:
-      remove(statsComponent);
-      movieBoardPresenter.destroy();
-      movieBoardPresenter.init();
-      break;
-  }
-};
 
 export {commentsModel, handleSiteMenuClick};

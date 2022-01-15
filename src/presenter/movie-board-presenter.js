@@ -60,10 +60,6 @@ export default class MovieBoardPresenter {
     this.#moviesModel = moviesModel;
     this.#commentsModel = commentsModel;
     this.#filterModel = filterModel;
-
-    this.#moviesModel.addObserver(this.#handleModelEvent);
-    this.#commentsModel.addObserver(this.#handleModelEvent);
-    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get filmCards() {
@@ -95,6 +91,10 @@ export default class MovieBoardPresenter {
     render(this.#allMoviesListComponent, this.#allMoviesListContainer, RenderPosition.BEFOREEND);
     render(this.#topRatedMoviesListComponent, this.#topRatedMoviesListContainer, RenderPosition.BEFOREEND);
     render(this.#mostCommentedMoviesListComponent, this.#mostCommentedMoviesListContainer, RenderPosition.BEFOREEND);
+
+    this.#moviesModel.addObserver(this.#handleModelEvent);
+    this.#commentsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
 
     this.#renderMovieBoard();
   }

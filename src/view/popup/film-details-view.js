@@ -16,6 +16,8 @@ import {
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 
+const activeButtonClassName = 'film-details__control-button--active';
+
 const renderGenres = (genresArray) => {
   const genres = [];
 
@@ -230,16 +232,19 @@ export default class FilmDetailsView extends SmartView {
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.favoriteClick(FilmDetailsView.parseDataToMovie(this._data));
+    evt.target.classList.toggle(activeButtonClassName); //Для визуализации при активном фильтре и открытом попапе, т.к. карточка фильма удалится из списка, а попап останется
   }
 
   #watchlistClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.watchlistClick(FilmDetailsView.parseDataToMovie(this._data));
+    evt.target.classList.toggle(activeButtonClassName); //Для визуализации при активном фильтре и открытом попапе, т.к. карточка фильма удалится из списка, а попап останется
   }
 
   #alreadyWatchedClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.alreadyWatchedClick(FilmDetailsView.parseDataToMovie(this._data));
+    evt.target.classList.toggle(activeButtonClassName); //Для визуализации при активном фильтре и открытом попапе, т.к. карточка фильма удалится из списка, а попап останется
   }
 
   #closeClickHandler = (evt) => {

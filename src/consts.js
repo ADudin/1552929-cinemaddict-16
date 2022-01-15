@@ -179,3 +179,8 @@ export const FilterType = {
   FAVORITE: 'FAVORITE',
   STATS: 'STATS',
 };
+
+export const ScreenModeType = {
+  MOVIE_LISTS: 'MOVIE_LISTS',
+  STATISTIC: 'STATISTIC',
+};
