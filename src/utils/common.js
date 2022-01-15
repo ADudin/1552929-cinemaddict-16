@@ -163,3 +163,23 @@ export const getSortedByDateFilms = (films, filmsCount) => {
 
   return sortedFilms;
 };
+
+export const getUserProfileRating = (watchedMoviesCount) => {
+  const UserRankType = {
+    NOVICE: 'Novice',
+    FAN: 'Fan',
+    MOVIE_BUFF: 'Movie Buff',
+  };
+
+  if (watchedMoviesCount === 0) {
+    return '';
+  }
+  if (watchedMoviesCount <= 10) {
+    return UserRankType.NOVICE;
+  }
+  if (watchedMoviesCount <= 20) {
+    return UserRankType.FAN;
+  }
+
+  return UserRankType.MOVIE_BUFF;
+};

@@ -62,7 +62,7 @@ export default class FilterPresenter {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
 
-    this.#filterComponent = new SiteMenuView(filters, this.#filterModel.filter/*, this.#screenMode*/);
+    this.#filterComponent = new SiteMenuView(filters, this.#filterModel.filter);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
     this.#filterComponent.setStatisticMenuClickHandler(this.#handleScreenModeTypeChange);
 
@@ -99,5 +99,4 @@ export default class FilterPresenter {
     this.#currentScreenMode = modeType;
     handleSiteMenuClick(this.#currentScreenMode);
   }
-
 }

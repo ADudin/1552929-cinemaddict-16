@@ -57,16 +57,25 @@ export default class SiteMenuView extends AbstractView {
   }
 
   #handleStatisticMenuClick = (evt) => {
+    const statisticMenuButton = this.element.querySelector('.main-navigation__additional');
+    const filterMenuButtons = this.element.querySelectorAll('.main-navigation__item');
+
     evt.preventDefault();
     if (evt.target.dataset.mode === ScreenModeType.STATISTIC) {
-      this.element.querySelector('.main-navigation__additional').classList.add('main-navigation__additional--active');
-      const filterMenuButtons = this.element.querySelectorAll('.main-navigation__item');
+      statisticMenuButton.classList.add('main-navigation__additional--active');
+
       for (let i = 0; i < filterMenuButtons.length; i++) {
         if (filterMenuButtons[i].classList.contains('main-navigation__item--active')) {
           filterMenuButtons[i].classList.remove('main-navigation__item--active');
         }
       }
     }
+
+    if (evt.target.dataset.mode === ScreenModeType.MOVIE_LISTS && evt.target.dataset.type === this.#currentFilterType) {
+      evt.target.classList.add('main-navigation__item--active');
+      statisticMenuButton.classList.remove('main-navigation__additional--active');
+    }
+
     this._callback.statisticMenuClick(evt.target.dataset.mode);
   }
 }

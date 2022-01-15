@@ -52,9 +52,9 @@ const handleSiteMenuClick = (modeType) => {
   }
 };
 
-const filterPresenter = new FilterPresenter(siteMainElement, filterModel, moviesModel/*, screenModeModel*/);
+const filterPresenter = new FilterPresenter(siteMainElement, filterModel, moviesModel);
 
-render(siteHeaderElement, new UserProfileView(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new UserProfileView(moviesModel), RenderPosition.BEFOREEND);
 render(siteFooterElement, new FooterStatisticsView(), RenderPosition.BEFOREEND);
 
 filterPresenter.init();
