@@ -45,6 +45,7 @@ export default class StatisticPresenter {
 
   #handleFilterTypeChange = (currentFilterType) => {
     this.#currentFilterType = currentFilterType;
+    //console.log(currentFilterType);
 
     remove(this.#statisticComponent);
     render(this.#statisticContainer, this.#statisticComponent, RenderPosition.BEFOREEND);

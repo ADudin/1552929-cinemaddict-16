@@ -28,6 +28,7 @@ const createStatisticTemplate = (watchedMovies, dateFrom, currentFilterType) => 
 
     for (let i = 0; i < movies.length; i++) {
       const watchingDate = movies[i].userDetails.watchingDate;
+      //console.log(watchingDate);
 
       if (dayjs(watchingDate).isSameOrAfter(dateFrom)) {
         filteredMoviesArray.push(movies[i]);
@@ -96,11 +97,12 @@ const createStatisticTemplate = (watchedMovies, dateFrom, currentFilterType) => 
     return [...topGenre];
   };
 
+  //const filteredMovies = getFilteredMovies(watchedMovies);
   const totalDuration = getFilteredMoviesTotalDuration(filteredMovies);
   const topGenge = getTopGenre(filteredMovies);
 
   //console.log(watchedMoviesCount);
-  //console.log(filteredMovies.length);
+  //console.log(watchedMovies.filter((movie) => isWatchedInPeriod(movie)));
 
   return `<section class="statistic">
     <p class="statistic__rank">
@@ -157,7 +159,7 @@ export default class StatisticView extends SmartView {
   }
 
   restoreHandlers = () => {
-    this.setFilterTypeChangeHandler();
+    this.setFilterTypeChangeHandler(this._callback.filterTypeChange);
   }
 
   setFilterTypeChangeHandler = (callback) => {
@@ -167,9 +169,10 @@ export default class StatisticView extends SmartView {
 
   #filterTypeChangeHandler = (evt) => {
     evt.preventDefault();
+    this._callback.filterTypeChange(evt.target.value);
 
     if (evt.target.value === StatisticFilterType.TODAY.type) {
-      this.#currentFilterType = StatisticFilterType.TODAY;
+      //this.#currentFilterType = StatisticFilterType.TODAY;
       this.updateData({
         dateFrom: dayjs().toDate(),
       });
@@ -177,7 +180,7 @@ export default class StatisticView extends SmartView {
 
     if (evt.target.value === StatisticFilterType.WEEK.type) {
       const dayOfCurrentWeek = dayjs().day();
-      this.#currentFilterType = StatisticFilterType.WEEK;
+      //this.#currentFilterType = StatisticFilterType.WEEK;
       this.updateData({
         dateFrom: dayjs().subtract(dayOfCurrentWeek, 'day').toDate()
       });
@@ -185,7 +188,7 @@ export default class StatisticView extends SmartView {
 
     if (evt.target.value === StatisticFilterType.MONTH.type) {
       const dayOfCurrentMonth = dayjs().date();
-      this.#currentFilterType = StatisticFilterType.MONTH;
+      //this.#currentFilterType = StatisticFilterType.MONTH;
       this.updateData({
         dateFrom: dayjs().subtract(dayOfCurrentMonth, 'day').toDate()
       });
@@ -193,14 +196,14 @@ export default class StatisticView extends SmartView {
 
     if (evt.target.value === StatisticFilterType.YEAR.type) {
       const dayOfCurrentYear = dayjs().dayOfYear();
-      this.#currentFilterType = StatisticFilterType.YEAR;
+      //this.#currentFilterType = StatisticFilterType.YEAR;
       this.updateData({
         dateFrom: dayjs().subtract(dayOfCurrentYear, 'day').toDate()
       });
     }
 
     if (evt.target.value === StatisticFilterType.ALL.type) {
-      this.#currentFilterType = StatisticFilterType.ALL;
+      //this.#currentFilterType = StatisticFilterType.ALL;
       this.updateData({
         dateFrom: dayjs().subtract(100, 'year').toDate()
       });
