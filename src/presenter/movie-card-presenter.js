@@ -145,7 +145,13 @@ export default class MovieCardPresenter {
     this.#changeData(
       UserAction.UPDATE_FILMCARD,
       this.#filterType === FilterType.HISTORY && this.#filmCard.userDetails.alreadyWatched === true ? UpdateType.MINOR : UpdateType.PATCH,
-      {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, alreadyWatched: !this.#filmCard.userDetails.alreadyWatched}}
+      {...this.#filmCard, userDetails:
+        {
+          ...this.#filmCard.userDetails,
+          alreadyWatched: !this.#filmCard.userDetails.alreadyWatched,
+          watchingDate: !this.#filmCard.userDetails.alreadyWatched ? new Date() : null
+        }
+      }
     );
   }
 

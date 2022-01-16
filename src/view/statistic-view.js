@@ -4,6 +4,7 @@ import dayOfYear from 'dayjs/plugin/dayOfYear';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import {getUserProfileRating} from '../utils/common.js';
 import {StatisticFilterType} from '../consts';
+
 //import Chart from 'chart.js';
 //import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -22,22 +23,7 @@ const createStatisticTemplate = (watchedMovies, dateFrom, currentFilterType) => 
   const isWatchedInPeriod = (movie) => dayjs(movie.userDetails.watchingDate).isSameOrAfter(dateFrom);
 
   const filteredMovies = watchedMovies.filter((movie) => isWatchedInPeriod(movie));
-  /*
-  const getFilteredMovies = (movies) => {
-    const filteredMoviesArray = [];
 
-    for (let i = 0; i < movies.length; i++) {
-      const watchingDate = movies[i].userDetails.watchingDate;
-      //console.log(watchingDate);
-
-      if (dayjs(watchingDate).isSameOrAfter(dateFrom)) {
-        filteredMoviesArray.push(movies[i]);
-      }
-    }
-
-    return filteredMoviesArray;
-  };
-  */
   const getFilteredMoviesTotalDuration = (movies) => {
     let totalDurationInMins = 0;
 
@@ -97,12 +83,8 @@ const createStatisticTemplate = (watchedMovies, dateFrom, currentFilterType) => 
     return [...topGenre];
   };
 
-  //const filteredMovies = getFilteredMovies(watchedMovies);
   const totalDuration = getFilteredMoviesTotalDuration(filteredMovies);
   const topGenge = getTopGenre(filteredMovies);
-
-  //console.log(watchedMoviesCount);
-  //console.log(watchedMovies.filter((movie) => isWatchedInPeriod(movie)));
 
   return `<section class="statistic">
     <p class="statistic__rank">
@@ -127,7 +109,7 @@ const createStatisticTemplate = (watchedMovies, dateFrom, currentFilterType) => 
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">${filteredMovies.length === 0 ? '' : topGenge}</p>
+        <p class="statistic__item-text">${filteredMovies.length === 0 ? '' : topGenge[0]}</p>
       </li>
     </ul>
 
@@ -139,71 +121,72 @@ const createStatisticTemplate = (watchedMovies, dateFrom, currentFilterType) => 
 };
 
 export default class StatisticView extends SmartView {
-  #watchedMovies = null;
-  #currentFilterType = null;
+  #moviesModel = null;
+  #currentFilterType = StatisticFilterType.ALL;
 
-  constructor (watchedMovies, currentFilterType) {
+  constructor (moviesModel) {
     super();
-    this.#watchedMovies = watchedMovies;
-    this.#currentFilterType = currentFilterType;
+    this.#moviesModel = moviesModel;
 
     this._data = {
       dateFrom: dayjs().subtract(100, 'year').toDate(),
       dateTo: dayjs().toDate(),
     };
+
+    this.#setFilterTypeChangeHandler();
   }
 
   get template() {
+    const watchedMovies = this.#moviesModel.filmCards.filter((filmCard) => filmCard.userDetails.alreadyWatched === true);
 
-    return createStatisticTemplate(this.#watchedMovies, this._data.dateFrom, this.#currentFilterType);
+    return createStatisticTemplate(watchedMovies, this._data.dateFrom, this.#currentFilterType);
   }
 
   restoreHandlers = () => {
-    this.setFilterTypeChangeHandler(this._callback.filterTypeChange);
+    this.#setFilterTypeChangeHandler();
   }
 
-  setFilterTypeChangeHandler = (callback) => {
-    this._callback.filterTypeChange = callback;
+  #setFilterTypeChangeHandler = () => {
     this.element.querySelector('.statistic__filters').addEventListener('change', this.#filterTypeChangeHandler);
   }
 
   #filterTypeChangeHandler = (evt) => {
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.value);
 
     if (evt.target.value === StatisticFilterType.TODAY.type) {
-      //this.#currentFilterType = StatisticFilterType.TODAY;
+      this.#currentFilterType = StatisticFilterType.TODAY;
+      const startOfTheDay = dayjs().hour(0).minute(0);
       this.updateData({
-        dateFrom: dayjs().toDate(),
+        dateFrom: startOfTheDay
       });
     }
 
     if (evt.target.value === StatisticFilterType.WEEK.type) {
-      const dayOfCurrentWeek = dayjs().day();
-      //this.#currentFilterType = StatisticFilterType.WEEK;
+      this.#currentFilterType = StatisticFilterType.WEEK;
+      const startOfTheWeek = dayjs().day(-6).hour(0).minute(0);
       this.updateData({
-        dateFrom: dayjs().subtract(dayOfCurrentWeek, 'day').toDate()
+        dateFrom: startOfTheWeek
       });
     }
 
     if (evt.target.value === StatisticFilterType.MONTH.type) {
-      const dayOfCurrentMonth = dayjs().date();
-      //this.#currentFilterType = StatisticFilterType.MONTH;
+      this.#currentFilterType = StatisticFilterType.MONTH;
+      const startOfTheMonth = dayjs().date(1).hour(0).minute(0);
       this.updateData({
-        dateFrom: dayjs().subtract(dayOfCurrentMonth, 'day').toDate()
+        dateFrom: startOfTheMonth
       });
     }
 
     if (evt.target.value === StatisticFilterType.YEAR.type) {
-      const dayOfCurrentYear = dayjs().dayOfYear();
-      //this.#currentFilterType = StatisticFilterType.YEAR;
+      this.#currentFilterType = StatisticFilterType.YEAR;
+      const startOfTheYear = dayjs().dayOfYear(1).hour(0).minute(0);
       this.updateData({
-        dateFrom: dayjs().subtract(dayOfCurrentYear, 'day').toDate()
+        dateFrom: startOfTheYear
       });
     }
 
     if (evt.target.value === StatisticFilterType.ALL.type) {
-      //this.#currentFilterType = StatisticFilterType.ALL;
+      this.#currentFilterType = StatisticFilterType.ALL;
       this.updateData({
         dateFrom: dayjs().subtract(100, 'year').toDate()
       });

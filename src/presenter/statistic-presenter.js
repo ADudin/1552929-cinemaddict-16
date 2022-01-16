@@ -15,7 +15,7 @@ export default class StatisticPresenter {
   #moviesModel = null;
   #statisticComponent = null;
 
-  #currentFilterType = null;
+  #currentFilterType = StatisticFilterType.ALL;
 
   constructor(statisticContainer, moviesModel) {
     this.#statisticContainer = statisticContainer;
@@ -27,7 +27,8 @@ export default class StatisticPresenter {
   }
 
   init = () => {
-    this.#currentFilterType = StatisticFilterType.ALL;
+    //this.#currentFilterType = StatisticFilterType.ALL;
+    //console.log(this.#currentFilterType);
     const watchedMovies = this.watchedMovies;
     this.#statisticComponent = new StatisticView(watchedMovies, this.#currentFilterType);
     this.#statisticComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
@@ -43,13 +44,16 @@ export default class StatisticPresenter {
     this.#moviesModel.removeObserver(this.#handleModelEvent);
   }
 
+
   #handleFilterTypeChange = (currentFilterType) => {
     this.#currentFilterType = currentFilterType;
-    //console.log(currentFilterType);
+    //console.log(this.#currentFilterType);
 
     remove(this.#statisticComponent);
+    this.#statisticComponent = new StatisticView(this.watchedMovies, this.#currentFilterType);
     render(this.#statisticContainer, this.#statisticComponent, RenderPosition.BEFOREEND);
   }
+
 
   #handleModelEvent = (update) => {
     if (update) {
