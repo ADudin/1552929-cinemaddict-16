@@ -46,8 +46,8 @@ export const generateReleaseDate = () => { // Генерация случайн�
   return dayjs().add(daysGap, 'day').toDate();
 };
 
-export const generateDate = () => { // Генерация случайной даты релиза фильма (модуль: film.js);
-  const MAX_MINUTES_GAP = 525600;
+export const generateDate = () => { // Генерация случайной даты просмотра фильма (модуль: film.js);
+  const MAX_MINUTES_GAP = 23040; // 525600
   const minutesGap = getRandomInteger(-MAX_MINUTES_GAP, 0);
 
   return dayjs().add(minutesGap, 'minute').toDate();
