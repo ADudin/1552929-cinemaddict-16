@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import {MAX_COMMENTS_COUNT} from '../consts';
+
+dayjs.extend(isSameOrAfter);
 
 export const getRandomInteger = (a = 0, b = 1) => { // Генерация случайного числа (модуль: film.js);
   const lower = Math.ceil(Math.min(a, b));
@@ -182,4 +185,44 @@ export const getUserProfileRating = (watchedMoviesCount) => {
   }
 
   return UserRankType.MOVIE_BUFF;
+};
+
+export const isWatchedInPeriod = (movie, date) => dayjs(movie.userDetails.watchingDate).isSameOrAfter(date); // statistic-view.js
+
+export const getFilteredMoviesTotalDuration = (movies) => { // statistic-view.js
+  let totalDurationInMins = 0;
+
+  for (let i = 0; i < movies.length; i++) {
+    totalDurationInMins += movies[i].runtime;
+  }
+
+  const hours = Math.trunc(totalDurationInMins / 60);
+  const minutes = totalDurationInMins % 60;
+  const duration = new Object();
+  duration.hours = hours;
+  duration.minutes = minutes;
+
+  return duration;
+};
+
+const getMaxObjectKey = (obj) => {
+  const maxValue = Math.max.apply(null, Object.values(obj));
+
+  return Object.keys(obj).filter((key) => obj[key] === maxValue);
+};
+
+export const getCurrentGenresObject = (movies) => { // statistic-view.js
+  const genresArray = [];
+  const currentGenresObject = {};
+
+  movies.forEach((movie) => genresArray.push(movie.genre));
+  genresArray.flat().forEach((item) => {currentGenresObject[item] = (currentGenresObject[item] || 0) + 1;});
+
+  return currentGenresObject;
+};
+
+export const getTopGenreFromMovies = (movies) => { // statistic-view.js
+  const genresObject = getCurrentGenresObject(movies);
+
+  return getMaxObjectKey(genresObject).slice(0, 1);
 };

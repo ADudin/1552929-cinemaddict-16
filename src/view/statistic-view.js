@@ -1,15 +1,88 @@
 import SmartView from './popup/smart-view';
 import dayjs from 'dayjs';
 import dayOfYear from 'dayjs/plugin/dayOfYear';
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import {getUserProfileRating} from '../utils/common.js';
 import {StatisticFilterType} from '../consts';
 
-//import Chart from 'chart.js';
-//import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {
+  getUserProfileRating,
+  isWatchedInPeriod,
+  getFilteredMoviesTotalDuration,
+  getCurrentGenresObject,
+  getTopGenreFromMovies
+} from '../utils/common.js';
+
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 dayjs.extend(dayOfYear);
-dayjs.extend(isSameOrAfter);
+
+const renderStatisticChart = (statisticCtx, watchedMovies, dateFrom) => {
+
+  const filteredMovies = watchedMovies.filter((movie) => isWatchedInPeriod(movie, dateFrom));
+  const BAR_HEIGHT = 50;
+  const genres = Object.keys(getCurrentGenresObject(filteredMovies));
+  const genresCounts = Object.values(getCurrentGenresObject(filteredMovies));
+
+  statisticCtx.height =  BAR_HEIGHT * genres.length;
+
+  return new Chart(statisticCtx, {
+    plugins: [ChartDataLabels],
+    type: 'horizontalBar',
+    data: {
+      labels: genres,
+      datasets: [{
+        data: genresCounts,
+        backgroundColor: '#ffe800',
+        hoverBackgroundColor: '#ffe800',
+        anchor: 'start',
+        barThickness: 24,
+      }],
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        datalabels: {
+          font: {
+            size: 20,
+          },
+          color: '#ffffff',
+          anchor: 'start',
+          align: 'start',
+          offset: 40,
+        },
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: '#ffffff',
+            padding: 100,
+            fontSize: 20,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+        }],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        enabled: false,
+      },
+    },
+  });
+};
 
 const createFilterItemTemplate = (type, name, currentFilterType) => (
   `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${type}" value="${type}" ${type === currentFilterType.type ? 'checked' : ''}>
@@ -19,72 +92,9 @@ const createFilterItemTemplate = (type, name, currentFilterType) => (
 const createStatisticTemplate = (watchedMovies, dateFrom, currentFilterType) => {
   const filterItemsList = Object.values(StatisticFilterType).map((value) => createFilterItemTemplate(value.type, value.name, currentFilterType)).join('');
   const watchedMoviesCount = watchedMovies.length;
-
-  const isWatchedInPeriod = (movie) => dayjs(movie.userDetails.watchingDate).isSameOrAfter(dateFrom);
-
-  const filteredMovies = watchedMovies.filter((movie) => isWatchedInPeriod(movie));
-
-  const getFilteredMoviesTotalDuration = (movies) => {
-    let totalDurationInMins = 0;
-
-    for (let i = 0; i < movies.length; i++) {
-      totalDurationInMins += movies[i].runtime;
-    }
-
-    const hours = Math.trunc(totalDurationInMins / 60);
-    const minutes = totalDurationInMins % 60;
-    const duration = new Object();
-    duration.hours = hours;
-    duration.minutes = minutes;
-
-    return duration;
-  };
-
-  const getGenresList = (movies) => {
-    const genres = new Set();
-    for(const movie of movies) {
-      genres.add(...movie.genre.map((genre) => genre));
-    }
-
-    return [...genres];
-  };
-
-  const getMoviesByGenre = (movies) => {
-    const genres = getGenresList(movies);
-    const moviesByGenre = new Array();
-    genres.forEach((genre) => {
-      const moviesCount = movies.slice().filter((movie) => movie.genre.includes(genre)).length;
-      moviesByGenre.push(moviesCount);
-    });
-
-    return moviesByGenre;
-  };
-
-  const getTopGenre = (movies) => {
-    const genres = getGenresList(movies);
-    const moviesByGenre = getMoviesByGenre(movies);
-    const topGenreMoviesNumber = Math.max(...moviesByGenre);
-    const genresMoviesPairs = [];
-    const topGenre = [];
-
-    let count = 0;
-
-    for(const genre of genres) {
-      genresMoviesPairs.push({name: genre, count: moviesByGenre[count]});
-      count ++;
-    }
-
-    for(const pair of genresMoviesPairs) {
-      if(pair.count === topGenreMoviesNumber) {
-        topGenre.push(pair.name);
-      }
-    }
-
-    return [...topGenre];
-  };
-
+  const filteredMovies = watchedMovies.filter((movie) => isWatchedInPeriod(movie, dateFrom));
   const totalDuration = getFilteredMoviesTotalDuration(filteredMovies);
-  const topGenge = getTopGenre(filteredMovies);
+  const topGenge = getTopGenreFromMovies(filteredMovies);
 
   return `<section class="statistic">
     <p class="statistic__rank">
@@ -122,28 +132,30 @@ const createStatisticTemplate = (watchedMovies, dateFrom, currentFilterType) => 
 
 export default class StatisticView extends SmartView {
   #moviesModel = null;
+  #watchedMovies;
   #currentFilterType = StatisticFilterType.ALL;
+  #chart = null;
 
   constructor (moviesModel) {
     super();
     this.#moviesModel = moviesModel;
+    this.#watchedMovies = this.#moviesModel.filmCards.filter((filmCard) => filmCard.userDetails.alreadyWatched === true);
 
     this._data = {
       dateFrom: dayjs().subtract(100, 'year').toDate(),
-      dateTo: dayjs().toDate(),
     };
 
     this.#setFilterTypeChangeHandler();
+    this.#renderCharts();
   }
 
   get template() {
-    const watchedMovies = this.#moviesModel.filmCards.filter((filmCard) => filmCard.userDetails.alreadyWatched === true);
-
-    return createStatisticTemplate(watchedMovies, this._data.dateFrom, this.#currentFilterType);
+    return createStatisticTemplate(this.#watchedMovies, this._data.dateFrom, this.#currentFilterType);
   }
 
   restoreHandlers = () => {
     this.#setFilterTypeChangeHandler();
+    this.#renderCharts();
   }
 
   #setFilterTypeChangeHandler = () => {
@@ -191,5 +203,12 @@ export default class StatisticView extends SmartView {
         dateFrom: dayjs().subtract(100, 'year').toDate()
       });
     }
+  }
+
+  #renderCharts = () => {
+    const {dateFrom} = this._data;
+    const statisticCtx = this.element.querySelector('.statistic__chart');
+
+    this.#chart = renderStatisticChart(statisticCtx, this.#watchedMovies, dateFrom);
   }
 }
