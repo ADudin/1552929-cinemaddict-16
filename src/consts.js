@@ -177,4 +177,33 @@ export const FilterType = {
   WATCHLIST: 'WATCHLIST',
   HISTORY: 'HISTORY',
   FAVORITE: 'FAVORITE',
+  STATS: 'STATS',
+};
+
+export const ScreenModeType = {
+  MOVIE_LISTS: 'MOVIE_LISTS',
+  STATISTIC: 'STATISTIC',
+};
+
+export const StatisticFilterType = {
+  ALL: {
+    type: 'all-time',
+    name: 'All time',
+  },
+  TODAY: {
+    type: 'today',
+    name: 'Today',
+  },
+  WEEK: {
+    type: 'week',
+    name: 'Week',
+  },
+  MONTH: {
+    type: 'month',
+    name: 'Month',
+  },
+  YEAR: {
+    type: 'year',
+    name: 'Year',
+  },
 };

@@ -2,7 +2,8 @@ import SiteMenuView from '../view/site-menu-view';
 import {
   RenderPosition,
   UpdateType,
-  FilterType
+  FilterType,
+  ScreenModeType,
 } from '../consts';
 
 import {
@@ -13,6 +14,8 @@ import {
 
 import {filter} from '../utils/filter';
 
+import {handleSiteMenuClick} from '../main';
+
 export default class FilterPresenter {
   #filterContainer = null;
   #filterModel = null;
@@ -20,13 +23,12 @@ export default class FilterPresenter {
 
   #filterComponent = null;
 
+  #currentScreenMode = ScreenModeType.MOVIE_LISTS;
+
   constructor(filterContainer, filterModel, moviesModel) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
     this.#moviesModel = moviesModel;
-
-    this.#moviesModel.addObserver(this.#handleModelEvent);
-    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get filters() {
@@ -62,6 +64,10 @@ export default class FilterPresenter {
 
     this.#filterComponent = new SiteMenuView(filters, this.#filterModel.filter);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
+    this.#filterComponent.setStatisticMenuClickHandler(this.#handleScreenModeTypeChange);
+
+    this.#moviesModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
 
     if (prevFilterComponent === null) {
       render(this.#filterContainer, this.#filterComponent, RenderPosition.BEFOREBEGIN);
@@ -82,5 +88,15 @@ export default class FilterPresenter {
     }
 
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
+  }
+
+  #handleScreenModeTypeChange = (modeType) => {
+
+    if (this.#currentScreenMode === modeType) {
+      return;
+    }
+
+    this.#currentScreenMode = modeType;
+    handleSiteMenuClick(this.#currentScreenMode);
   }
 }

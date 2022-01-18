@@ -60,10 +60,6 @@ export default class MovieBoardPresenter {
     this.#moviesModel = moviesModel;
     this.#commentsModel = commentsModel;
     this.#filterModel = filterModel;
-
-    this.#moviesModel.addObserver(this.#handleModelEvent);
-    this.#commentsModel.addObserver(this.#handleModelEvent);
-    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get filmCards() {
@@ -96,7 +92,19 @@ export default class MovieBoardPresenter {
     render(this.#topRatedMoviesListComponent, this.#topRatedMoviesListContainer, RenderPosition.BEFOREEND);
     render(this.#mostCommentedMoviesListComponent, this.#mostCommentedMoviesListContainer, RenderPosition.BEFOREEND);
 
+    this.#moviesModel.addObserver(this.#handleModelEvent);
+    this.#commentsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
+
     this.#renderMovieBoard();
+  }
+
+  destroy = () => {
+    this.#clearMovieBoard({resetRenderedFilmCardsCount: true, resetSortType: true});
+    remove(this.#filmSectionComponent);
+    this.#moviesModel.removeObserver(this.#handleModelEvent);
+    this.#commentsModel.removeObserver(this.#handleModelEvent);
+    this.#filterModel.removeObserver(this.#handleModelEvent);
   }
 
   #handleModeChange = () => {
@@ -126,21 +134,6 @@ export default class MovieBoardPresenter {
       case UpdateType.PATCH:
         if (this.#movieCardPresenter.has(data.id)) {
           this.#movieCardPresenter.get(data.id).init(data);
-
-          if (this.#filterType === FilterType.WATCHLIST && data.userDetails.watchlist === false) {
-            this.#clearMovieBoard();
-            this.#renderMovieBoard();
-          }
-
-          if (this.#filterType === FilterType.HISTORY && data.userDetails.alreadyWatched === false) {
-            this.#clearMovieBoard();
-            this.#renderMovieBoard();
-          }
-
-          if (this.#filterType === FilterType.FAVORITE && data.userDetails.favorite === false) {
-            this.#clearMovieBoard();
-            this.#renderMovieBoard();
-          }
         }
 
         if(this.#topRatedCardPresenter.has(data.id)) {
@@ -185,7 +178,7 @@ export default class MovieBoardPresenter {
     if (!filmCard) {  //Проверка нужна на случай, если количество карточек для отрисовки меньше FILM_COUNT_PER_STEP;
       return;
     }
-    const movieCardPresenter = new MovieCardPresenter(movieListContainer, this.#mainContainer, this.#handleViewAction, this.#handleModeChange);
+    const movieCardPresenter = new MovieCardPresenter(movieListContainer, this.#mainContainer, this.#handleViewAction, this.#handleModeChange, this.#filterType);
     movieCardPresenter.init(filmCard, comments);
     presenter.set(filmCard.id, movieCardPresenter);
   }
