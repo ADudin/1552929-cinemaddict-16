@@ -207,3 +207,6 @@ export const StatisticFilterType = {
     name: 'Year',
   },
 };
+
+export const AUTHORIZATION = 'Basic kTy0gIdzs1234rD';
+export const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict/';

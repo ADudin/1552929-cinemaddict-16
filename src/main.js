@@ -12,6 +12,8 @@ import {
   RenderPosition,
   FILM_CARDS_NUMBER,
   ScreenModeType,
+  AUTHORIZATION,
+  END_POINT
 } from './consts.js';
 
 import {remove, render} from './utils/render.js';
@@ -19,14 +21,15 @@ import {remove, render} from './utils/render.js';
 import MoviesModel from './model/movies-model.js';
 import CommentsModel from './model/comments-model.js';
 import FilterModel from './model/filter-model.js';
+import ApiService from './api-service.js';
 
 const filmComments = [];
 const filmCards = Array.from({length: FILM_CARDS_NUMBER}, () => generateFilm(filmComments));
 
-const moviesModel = new MoviesModel();
+const moviesModel = new MoviesModel(new ApiService(END_POINT, AUTHORIZATION));
 moviesModel.filmCards = filmCards;
 
-const commentsModel = new CommentsModel();
+const commentsModel = new CommentsModel(new ApiService(END_POINT, AUTHORIZATION));
 commentsModel.comments = filmComments;
 
 const filterModel = new FilterModel();

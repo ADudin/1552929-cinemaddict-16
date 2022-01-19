@@ -1,7 +1,18 @@
 import AbstractObsrvable from '../utils/abstract-observable';
 
 export default class CommentsModel extends AbstractObsrvable {
+  #apiService = null;
   #comments = [];
+
+  constructor(apiService) {
+    super();
+    this.#apiService = apiService;
+    /*
+    this.#apiService.comments.then((comments) => {
+      console.log(comments);
+    });
+    */
+  }
 
   set comments(comments) {
     this.#comments = [...comments];

@@ -1,7 +1,17 @@
 import AbstractObsrvable from '../utils/abstract-observable';
 
 export default class MoviesModel extends AbstractObsrvable {
+  #apiService = null;
   #filmCards = [];
+
+  constructor(apiService) {
+    super();
+    this.#apiService = apiService;
+
+    this.#apiService.filmCards.then((filmCards) => {
+      console.log(filmCards);
+    });
+  }
 
   set filmCards(filmCards) {
     this.#filmCards = [...filmCards];

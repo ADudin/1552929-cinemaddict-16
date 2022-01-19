@@ -22,7 +22,7 @@ export default class ApiService {
       url: `movies/${filmCard.id}`,
       method: Method.PUT,
       body: JSON.stringify(filmCard),
-      headers: new Headers({'Countent-type': 'appliction/json'}),
+      headers: new Headers({'Content-Type': 'application/json'}),
     });
 
     const parsedResponce = await ApiService.parseResponce(responce);
@@ -46,7 +46,7 @@ export default class ApiService {
     body = null,
     headers = new Headers(),
   }) => {
-    headers.append('Authoriztion', this.#authorization);
+    headers.append('Authorization', this.#authorization);
 
     const responce = await fetch(
       `${this.#endPoint}/${url}`,
