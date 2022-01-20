@@ -4,6 +4,7 @@ import FilmsListView from '../view/films-list-view.js';
 import ShowMoreBtnView from '../view/show-more-btn-view.js';
 import NoFilmsView from '../view/no-films-view.js';
 import FilmsListContainerView from '../view/film-list-container-view.js';
+import LoadingView from '../view/loading-view.js';
 
 import {
   RenderPosition,
@@ -43,6 +44,7 @@ export default class MovieBoardPresenter {
   #allMoviesListComponent = new FilmsListView('','visually-hidden', 'All movies. Upcoming');
   #topRatedMoviesListComponent = new FilmsListView('films-list--extra', '','Top rated');
   #mostCommentedMoviesListComponent = new FilmsListView('films-list--extra','', 'Most Commented');
+  #loadingComponent = new LoadingView();
   #allMoviesListContainer = new FilmsListContainerView();
   #topRatedMoviesListContainer = new FilmsListContainerView();
   #mostCommentedMoviesListContainer = new FilmsListContainerView();
@@ -54,6 +56,7 @@ export default class MovieBoardPresenter {
   #mostCommentedCardPresenter = new Map();
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
+  #isLoading = true;
 
   constructor(mainContainer, moviesModel, commentsModel, filterModel) {
     this.#mainContainer = mainContainer;
@@ -155,6 +158,11 @@ export default class MovieBoardPresenter {
         this.#clearMovieBoard({resetRenderedFilmCardsCount: true, resetSortType: true});
         this.#renderMovieBoard();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderMovieBoard();
+        break;
     }
   }
 
@@ -187,6 +195,10 @@ export default class MovieBoardPresenter {
     for (let i = 0; i < Math.min(filmCards.length, this.#renderFilmCardsCount); i++) {
       this.#renderMovieCard(movieListContainer, filmCards[i], comments[i], presenter);
     }
+  }
+
+  #renderLoading = () => {
+    render(this.#mainContainer, this.#loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
   #renderNoFilmCards = () => {
@@ -245,6 +257,7 @@ export default class MovieBoardPresenter {
     this.#mostCommentedCardPresenter.clear();
 
     remove(this.#sortMenuComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noFilmsComponent) {
       remove(this.#noFilmsComponent);
@@ -262,6 +275,12 @@ export default class MovieBoardPresenter {
   }
 
   #renderMovieBoard = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+
+      return;
+    }
+
     const filmCardsCount = this.filmCards.length;
 
     if (filmCardsCount === 0) {

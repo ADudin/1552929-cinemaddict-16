@@ -21,7 +21,7 @@ export default class ApiService {
     const responce = await this.#load({
       url: `movies/${filmCard.id}`,
       method: Method.PUT,
-      body: JSON.stringify(filmCard),
+      body: JSON.stringify(this.#adaptToServer(filmCard)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
@@ -59,6 +59,58 @@ export default class ApiService {
     } catch(err) {
       ApiService.catchError(err);
     }
+  }
+
+  #adaptToServer = (filmCard) => {
+    const adaptedFilmCard = {...filmCard,
+      'id': filmCard.id,
+      'film_info': {
+        'title': filmCard.title,
+        'alternative_title': filmCard.alternativeTitle,
+        'total_rating': filmCard.totalRating,
+        'poster': filmCard.poster,
+        'age_rating': filmCard.ageRating,
+        'director': filmCard.director,
+        'writers': [...filmCard.writers],
+        'actors': [...filmCard.actors],
+        'release': {
+          'date': filmCard.release.date,
+          'release_country': filmCard.release.releaseCountry,
+        },
+        'runtime': filmCard.runtime,
+        'genre': [...filmCard.genre],
+        'description': filmCard.description,
+      },
+      'user_details': {
+        'watchlist': filmCard.userDetails.watchlist,
+        'already_watched': filmCard.userDetails.alreadyWatched,
+        'watching_date': filmCard.userDetails.watchingDate instanceof Date ? filmCard.userDetails.watchingDate.toISOString() : null,
+        'favorite': filmCard.userDetails.favorite,
+      },
+      'comments': filmCard.comments,
+    };
+
+    delete adaptedFilmCard.id;
+    delete adaptedFilmCard.title;
+    delete adaptedFilmCard.alternativeTitle;
+    delete adaptedFilmCard.totalRating;
+    delete adaptedFilmCard.poster;
+    delete adaptedFilmCard.ageRating;
+    delete adaptedFilmCard.director;
+    delete adaptedFilmCard.writers;
+    delete adaptedFilmCard.actors;
+    delete adaptedFilmCard.date;
+    delete adaptedFilmCard.releaseCountry;
+    delete adaptedFilmCard.runtime;
+    delete adaptedFilmCard.genre;
+    delete adaptedFilmCard.decription;
+    delete adaptedFilmCard.watchlist;
+    delete adaptedFilmCard.alreadyWatched;
+    delete adaptedFilmCard.watchingDate;
+    delete adaptedFilmCard.favorite;
+    delete adaptedFilmCard.comments;
+
+    return adaptedFilmCard;
   }
 
   static parseResponce = (responce) => responce.json();

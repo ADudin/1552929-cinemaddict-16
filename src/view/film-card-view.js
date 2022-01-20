@@ -8,6 +8,7 @@ import {
 import AbstractView from './abstract-view.js';
 
 const createFilmCardTemplate = (card) => {
+  //console.log(card);
   const {
     poster,
     title,
