@@ -8,11 +8,6 @@ export default class MoviesModel extends AbstractObsrvable {
   constructor(apiService) {
     super();
     this.#apiService = apiService;
-    /*
-    this.#apiService.filmCards.then((filmCards) => {
-      console.log(filmCards.map(this.#adaptToClient));
-    });
-    */
   }
 
   /*
@@ -28,9 +23,7 @@ export default class MoviesModel extends AbstractObsrvable {
   init = async () => {
     try {
       const filmCards = await this.#apiService.filmCards;
-      //console.log(filmCards);
       this.#filmCards = filmCards.map(this.#adaptToClient);
-      //console.log(this.#filmCards);
     } catch(err) {
       this.#filmCards = [];
     }
@@ -38,20 +31,26 @@ export default class MoviesModel extends AbstractObsrvable {
     this._notify(UpdateType.INIT);
   }
 
-  updateFilmCard = (updateType, update) => {
+  updateFilmCard = async (updateType, update) => {
     const index = this.#filmCards.findIndex((filmCard) => filmCard.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting filmCard');
     }
 
-    this.#filmCards = [
-      ...this.#filmCards.slice(0, index),
-      update,
-      ...this.#filmCards.slice(index + 1),
-    ];
+    try {
+      const responce = await this.#apiService.updateFilmCard(update);
+      const updatedFilmCard = this.#adaptToClient(responce);
+      this.#filmCards = [
+        ...this.#filmCards.slice(0, index),
+        updatedFilmCard,
+        ...this.#filmCards.slice(index + 1),
+      ];
 
-    this._notify(updateType, update);
+      this._notify(updateType, update);
+    } catch(err) {
+      throw new Error('Can\'t update movie');
+    }
   }
 
   #adaptToClient = (filmCard) => {
@@ -78,15 +77,11 @@ export default class MoviesModel extends AbstractObsrvable {
         'watchingDate': filmCard.user_details.watching_date,
         'favorite': filmCard.user_details.favorite,
       },
-      'comments': filmCard.comments,
+      'comments': [...filmCard.comments],
     };
 
-    //console.log(filmCard.comments);
-
-    delete adaptedFilmCard['id'];
     delete adaptedFilmCard['film_info'];
     delete adaptedFilmCard['user_details'];
-    delete adaptedFilmCard['comments'];
 
     return adaptedFilmCard;
   }

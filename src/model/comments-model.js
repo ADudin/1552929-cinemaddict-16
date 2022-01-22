@@ -7,19 +7,41 @@ export default class CommentsModel extends AbstractObsrvable {
   constructor(apiService) {
     super();
     this.#apiService = apiService;
-    /*
-    this.#apiService.comments.then((comments) => {
-      console.log(comments);
-    });
-    */
   }
 
+  /*
   set comments(comments) {
     this.#comments = [...comments];
   }
+  */
 
   get comments() {
     return this.#comments;
+  }
+
+  init = async (filmCard) => {
+    try {
+      const comments = await this.#apiService.getComments(filmCard);
+      this.#comments = comments.map(this.#adaptToClient);
+    } catch(err) {
+      this.#comments = [];
+    }
+
+    return this.#comments;
+  }
+
+  #adaptToClient = (comment) => {
+    const adaptedComment = {...comment,
+      'id': comment.id,
+      'author': comment.author,
+      'text': comment.comment,
+      'emotion': comment.emotion,
+      'date': comment.date,
+    };
+
+    delete adaptedComment['comment'];
+
+    return adaptedComment;
   }
 
   addComment = (updateType, update, newComment) => {

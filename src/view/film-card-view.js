@@ -8,7 +8,6 @@ import {
 import AbstractView from './abstract-view.js';
 
 const createFilmCardTemplate = (card) => {
-  //console.log(card);
   const {
     poster,
     title,
@@ -36,7 +35,7 @@ const createFilmCardTemplate = (card) => {
         <span class="film-card__duration">${getRuntimeFromMinutes(runtime)}</span>
         <span class="film-card__genre">${getFirstArrayElement(genre)}</span>
       </p>
-      <img src="./images/posters/${poster}" alt="" class="film-card__poster">
+      <img src="${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${getShortDescription(description)}</p>
       <span class="film-card__comments"> ${commentsNumber} comments</span>
     </a>

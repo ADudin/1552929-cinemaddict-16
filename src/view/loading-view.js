@@ -1,9 +1,9 @@
 import AbstractView from './abstract-view';
 
 const createNoFilmCardsTemplate = () => (
-  `<p class="board__no-tasks">
+  `<h2 class="films-list__title">
     Loading...
-  </p>`
+  </h2>`
 );
 
 export default class LoadingView extends AbstractView {

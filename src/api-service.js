@@ -1,6 +1,8 @@
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 export default class ApiService {
@@ -90,7 +92,6 @@ export default class ApiService {
       'comments': filmCard.comments,
     };
 
-    delete adaptedFilmCard.id;
     delete adaptedFilmCard.title;
     delete adaptedFilmCard.alternativeTitle;
     delete adaptedFilmCard.totalRating;
@@ -99,16 +100,11 @@ export default class ApiService {
     delete adaptedFilmCard.director;
     delete adaptedFilmCard.writers;
     delete adaptedFilmCard.actors;
-    delete adaptedFilmCard.date;
-    delete adaptedFilmCard.releaseCountry;
+    delete adaptedFilmCard.release;
     delete adaptedFilmCard.runtime;
     delete adaptedFilmCard.genre;
-    delete adaptedFilmCard.decription;
-    delete adaptedFilmCard.watchlist;
-    delete adaptedFilmCard.alreadyWatched;
-    delete adaptedFilmCard.watchingDate;
-    delete adaptedFilmCard.favorite;
-    delete adaptedFilmCard.comments;
+    delete adaptedFilmCard.description;
+    delete adaptedFilmCard.userDetails;
 
     return adaptedFilmCard;
   }
