@@ -67,7 +67,8 @@ export default class MovieCardPresenter {
 
     if(this.#mode === Mode.SHOW) {
       replace(this.#filmCardComponent, prevFilmCardComponent);
-      this.#createPopup();
+      this.#commentsModel.init(this.#filmCard);
+      this.#createPopup(this.#commentsModel.comments);
       replace(this.#filmDetailsSection, prevFilmDetailsComponent);
       this.#mode = Mode.SHOW;
     }
