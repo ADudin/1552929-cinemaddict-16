@@ -1,8 +1,6 @@
 import FilmCardView from '../view/film-card-view.js';
 import FilmDetailsView from '../view/popup/film-details-view.js';
 
-import {commentsModel} from '../main.js';
-
 import {
   render,
   remove,
@@ -13,7 +11,7 @@ import {
   RenderPosition,
   UserAction,
   UpdateType,
-  FilterType
+  FilterType,
 } from '../consts.js';
 
 const Mode = {
@@ -34,13 +32,15 @@ export default class MovieCardPresenter {
   #filmCard = null;
   #mode = Mode.DEFAULT;
   #filterType = null;
+  #commentsModel = null;
 
-  constructor(movieListContainer, popupContainer, changeData, changeMode, filterType) {
+  constructor(movieListContainer, popupContainer, changeData, changeMode, filterType, commentsModel) {
     this.#movieListContainer = movieListContainer;
     this.#popupContainer = popupContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
     this.#filterType = filterType;
+    this.#commentsModel = commentsModel;
   }
 
   init = (filmCard) => {
@@ -49,7 +49,7 @@ export default class MovieCardPresenter {
     const prevFilmCardComponent = this.#filmCardComponent;
     const prevFilmDetailsComponent = this.#filmDetailsSection;
 
-    this.#filmCardComponent = new FilmCardView(this.#filmCard, commentsModel.comments);
+    this.#filmCardComponent = new FilmCardView(this.#filmCard);
 
     this.#filmCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmCardComponent.setWatchlistClickHandler(this.#handleWatchlistClick);
@@ -67,7 +67,8 @@ export default class MovieCardPresenter {
 
     if(this.#mode === Mode.SHOW) {
       replace(this.#filmCardComponent, prevFilmCardComponent);
-      this.#createPopup();
+      this.#commentsModel.init(this.#filmCard);
+      this.#createPopup(this.#commentsModel.comments);
       replace(this.#filmDetailsSection, prevFilmDetailsComponent);
       this.#mode = Mode.SHOW;
     }
@@ -78,7 +79,6 @@ export default class MovieCardPresenter {
 
   destroy = () => {
     remove(this.#filmCardComponent);
-    //remove(this.#filmDetailsSection);
   }
 
   resetView = () => {
@@ -87,10 +87,8 @@ export default class MovieCardPresenter {
     }
   }
 
-  #createPopup = () => {
-    const comments = commentsModel.comments.filter((element) => this.#filmCard.comments.includes(element.id));
+  #createPopup = (comments) => {
     this.#filmDetailsSection = new FilmDetailsView(this.#filmCard, comments);
-
     this.#filmDetailsSection.setCloseBtnClickHandler(this.#handleCloseBtnClick);
     this.#filmDetailsSection.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmDetailsSection.setWatchlistClickHandler(this.#handleWatchlistClick);
@@ -99,9 +97,16 @@ export default class MovieCardPresenter {
     this.#filmDetailsSection.setAddNewCommentEventHandler(this.#handleAddNewCommentEvent);
   }
 
-  #showPopup = () => {
+  #showPopup = async () => {
+    let comments = [];
+    try {
+      comments = await this.#commentsModel.init(this.#filmCard);
+    } catch(err) {
+      comments = [];
+    }
+
     this.#changeMode();
-    this.#createPopup();
+    this.#createPopup(comments);
 
     render(this.#popupContainer, this.#filmDetailsSection, RenderPosition.BEFOREEND);
 
