@@ -44,12 +44,14 @@ export default class CommentsModel extends AbstractObsrvable {
     return adaptedComment;
   }
 
-  addComment = (updateType, update, newComment) => {
-    this.#comments = [
-      newComment,
-      ...this.#comments,
-    ];
-    this._notify(updateType, update);
+  addComment = async (updateType, update, comment) => {
+    try {
+      const response = await this.#apiService.addComment(update, comment);
+      this.#comments = response.comments.map((item) => this.#adaptToClient(item));
+      this._notify(updateType, update);
+    } catch (err) {
+      throw new Error('Can\'t add comment');
+    }
   }
 
   deleteComment = (updateType, update, commentToDelete) => {

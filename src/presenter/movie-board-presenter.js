@@ -135,6 +135,7 @@ export default class MovieBoardPresenter {
 
     switch (updateType) {
       case UpdateType.PATCH:
+        //console.log(data);
         if (this.#movieCardPresenter.has(data.id)) {
           this.#movieCardPresenter.get(data.id).init(data);
         }
