@@ -87,6 +87,18 @@ export default class MovieCardPresenter {
     }
   }
 
+  setSaving = () => {
+    this.#filmDetailsSection.updateData({
+      isSaving: true,
+    });
+  }
+
+  setDeleting = () => {
+    this.#filmDetailsSection.updateData({
+      isDeleting: true,
+    });
+  }
+
   #createPopup = (comments) => {
     this.#filmDetailsSection = new FilmDetailsView(this.#filmCard, comments);
     this.#filmDetailsSection.setCloseBtnClickHandler(this.#handleCloseBtnClick);

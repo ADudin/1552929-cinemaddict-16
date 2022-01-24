@@ -123,9 +123,11 @@ export default class MovieBoardPresenter {
         this.#moviesModel.updateFilmCard(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
+        this.#movieCardPresenter.get(update.id).setSaving();
         this.#commentsModel.addComment(updateType, update, comment);
         break;
       case UserAction.DELETE_COMMENT:
+        this.#movieCardPresenter.get(update.id).setDeleting();
         this.#commentsModel.deleteComment(updateType, update, comment);
         break;
     }
