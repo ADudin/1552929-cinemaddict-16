@@ -54,18 +54,22 @@ export default class CommentsModel extends AbstractObsrvable {
     }
   }
 
-  deleteComment = (updateType, update, commentToDelete) => {
+  deleteComment = async (updateType, update, commentToDelete) => {
     const index = this.#comments.findIndex((comment) => comment.id === commentToDelete.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
     }
 
-    this.#comments = [
-      ...this.#comments.slice(0, index),
-      ...this.#comments.slice(index + 1),
-    ];
-
-    this._notify(updateType, update);
+    try {
+      await this.#apiService.deleteComment(commentToDelete);
+      this.#comments = [
+        ...this.#comments.slice(0, index),
+        ...this.#comments.slice(index + 1),
+      ];
+      this._notify(updateType, update);
+    } catch(err) {
+      throw new Error('Can\'t delete comment');
+    }
   }
 }
