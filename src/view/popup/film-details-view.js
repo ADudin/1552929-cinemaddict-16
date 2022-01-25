@@ -53,6 +53,7 @@ const createFilmDetailsTemplate = (card, comments) => {
     userDetails,
     isDeleting,
     isSaving,
+    commentToDeleteId,
   } = card;
 
   const country = release.releaseCountry;
@@ -61,7 +62,7 @@ const createFilmDetailsTemplate = (card, comments) => {
   const favoriteClassName = userDetails.favorite;
 
   const commentsNumber = comments.length;
-  const commentsList = comments.map((comment) => new CommentsView(comment, isDeleting, isSaving).template).join('');
+  const commentsList = comments.map((comment) => new CommentsView(comment, isDeleting, commentToDeleteId).template).join('');
   const emojiList = EMOTIONS.map((emoji) => createEmojiItemTemplate(emoji, card, isSaving)).join('');
 
   return `<section class="film-details">

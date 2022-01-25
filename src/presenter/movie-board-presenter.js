@@ -127,7 +127,7 @@ export default class MovieBoardPresenter {
         this.#commentsModel.addComment(updateType, update, comment);
         break;
       case UserAction.DELETE_COMMENT:
-        this.#movieCardPresenter.get(update.id).setDeleting();
+        this.#movieCardPresenter.get(update.id).setDeleting(comment);
         this.#commentsModel.deleteComment(updateType, update, comment);
         break;
     }
@@ -137,7 +137,6 @@ export default class MovieBoardPresenter {
 
     switch (updateType) {
       case UpdateType.PATCH:
-        //console.log(data);
         if (this.#movieCardPresenter.has(data.id)) {
           this.#movieCardPresenter.get(data.id).init(data);
         }

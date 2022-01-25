@@ -1,7 +1,7 @@
 import {getCommentDate} from '../../utils/common';
 import AbstractView from '../abstract-view.js';
 
-const renderComment = (comment, isDeleting) => {
+const renderComment = (comment, isDeleting, commentToDeleteId) => {
   const {
     id,
     text,
@@ -19,7 +19,7 @@ const renderComment = (comment, isDeleting) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${getCommentDate(date)}</span>
-        <button class="film-details__comment-delete" data-comment-id="${id}" ${isDeleting ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+        <button class="film-details__comment-delete" data-comment-id="${id}" ${isDeleting ? 'disabled' : ''}>${isDeleting && id === commentToDeleteId ? 'Deleting...' : 'Delete'}</button>
       </p>
     </div>
   </li>`;
@@ -28,15 +28,17 @@ const renderComment = (comment, isDeleting) => {
 export default class CommentsView extends AbstractView {
   #comment = null;
   #isDeleting = false;
+  #commentToDeleteId = null;
 
-  constructor(comment, isDeleting) {
+  constructor(comment, isDeleting, commentToDeleteId) {
     super();
     this.#comment = comment;
     this.#isDeleting = isDeleting;
+    this.#commentToDeleteId = commentToDeleteId;
   }
 
   get template() {
 
-    return renderComment(this.#comment, this.#isDeleting);
+    return renderComment(this.#comment, this.#isDeleting, this.#commentToDeleteId);
   }
 }

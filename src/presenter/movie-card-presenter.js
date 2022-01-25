@@ -93,9 +93,10 @@ export default class MovieCardPresenter {
     });
   }
 
-  setDeleting = () => {
+  setDeleting = (comment) => {
     this.#filmDetailsSection.updateData({
       isDeleting: true,
+      commentToDeleteId: comment.id,
     });
   }
 
