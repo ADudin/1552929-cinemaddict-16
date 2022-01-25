@@ -100,6 +100,28 @@ export default class MovieCardPresenter {
     });
   }
 
+  setSaveAborting = () => {
+    const resetFormState = () => {
+      this.#filmDetailsSection.updateData({
+        isSaving: false,
+      });
+    };
+    const newCommentAddElement = document.querySelector('.film-details__new-comment');
+    this.#filmDetailsSection.shake(resetFormState, newCommentAddElement);
+  }
+
+  setDeleteAborting = (comment) => {
+    const resetFormState = () => {
+      this.#filmDetailsSection.updateData({
+        isDeleting: false,
+        commentToDeleteId: null,
+      });
+    };
+    const commentToDeleteElementId = this.#filmDetailsSection._data.comments.filter((item) => item === comment.id);
+    const commentToDeleteElement = document.getElementById(commentToDeleteElementId);
+    this.#filmDetailsSection.shake(resetFormState, commentToDeleteElement);
+  }
+
   #createPopup = (comments) => {
     this.#filmDetailsSection = new FilmDetailsView(this.#filmCard, comments);
     this.#filmDetailsSection.setCloseBtnClickHandler(this.#handleCloseBtnClick);

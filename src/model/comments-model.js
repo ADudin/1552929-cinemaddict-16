@@ -9,12 +9,6 @@ export default class CommentsModel extends AbstractObsrvable {
     this.#apiService = apiService;
   }
 
-  /*
-  set comments(comments) {
-    this.#comments = [...comments];
-  }
-  */
-
   get comments() {
     return this.#comments;
   }
