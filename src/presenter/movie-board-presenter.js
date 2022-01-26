@@ -116,17 +116,27 @@ export default class MovieBoardPresenter {
     this.#mostCommentedCardPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  #handleViewAction = (actionType, updateType, update, comment) => {
+  #handleViewAction = async (actionType, updateType, update, comment) => {
 
     switch (actionType) {
       case UserAction.UPDATE_FILMCARD:
         this.#moviesModel.updateFilmCard(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
-        this.#commentsModel.addComment(updateType, update, comment);
+        this.#movieCardPresenter.get(update.id).setSaving();
+        try {
+          await this.#commentsModel.addComment(updateType, update, comment);
+        } catch(err) {
+          this.#movieCardPresenter.get(update.id).setSaveAborting();
+        }
         break;
       case UserAction.DELETE_COMMENT:
-        this.#commentsModel.deleteComment(updateType, update, comment);
+        this.#movieCardPresenter.get(update.id).setDeleting(comment);
+        try {
+          await this.#commentsModel.deleteComment(updateType, update, comment);
+        } catch(err) {
+          this.#movieCardPresenter.get(update.id).setDeleteAborting(comment);
+        }
         break;
     }
   }

@@ -10,12 +10,6 @@ export default class MoviesModel extends AbstractObsrvable {
     this.#apiService = apiService;
   }
 
-  /*
-  set filmCards(filmCards) {
-    this.#filmCards = [...filmCards];
-  }
-  */
-
   get filmCards() {
     return this.#filmCards;
   }

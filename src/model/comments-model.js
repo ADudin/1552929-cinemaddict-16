@@ -9,12 +9,6 @@ export default class CommentsModel extends AbstractObsrvable {
     this.#apiService = apiService;
   }
 
-  /*
-  set comments(comments) {
-    this.#comments = [...comments];
-  }
-  */
-
   get comments() {
     return this.#comments;
   }
@@ -44,26 +38,32 @@ export default class CommentsModel extends AbstractObsrvable {
     return adaptedComment;
   }
 
-  addComment = (updateType, update, newComment) => {
-    this.#comments = [
-      newComment,
-      ...this.#comments,
-    ];
-    this._notify(updateType, update);
+  addComment = async (updateType, update, comment) => {
+    try {
+      const response = await this.#apiService.addComment(update, comment);
+      this.#comments = response.comments.map((item) => this.#adaptToClient(item));
+      this._notify(updateType, update);
+    } catch (err) {
+      throw new Error('Can\'t add comment');
+    }
   }
 
-  deleteComment = (updateType, update, commentToDelete) => {
+  deleteComment = async (updateType, update, commentToDelete) => {
     const index = this.#comments.findIndex((comment) => comment.id === commentToDelete.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
     }
 
-    this.#comments = [
-      ...this.#comments.slice(0, index),
-      ...this.#comments.slice(index + 1),
-    ];
-
-    this._notify(updateType, update);
+    try {
+      await this.#apiService.deleteComment(commentToDelete);
+      this.#comments = [
+        ...this.#comments.slice(0, index),
+        ...this.#comments.slice(index + 1),
+      ];
+      this._notify(updateType, update);
+    } catch(err) {
+      throw new Error('Can\'t delete comment');
+    }
   }
 }

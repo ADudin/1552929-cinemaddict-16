@@ -33,13 +33,35 @@ export default class ApiService {
   }
 
   getComments = async (filmCard) => {
-    const responce = await this.#load({
+    const response = await this.#load({
       url: `comments/${filmCard.id}`,
     });
 
-    const parsedResponce = await ApiService.parseResponce(responce);
+    const parsedResponse = await ApiService.parseResponce(response);
 
-    return parsedResponce;
+    return parsedResponse;
+  }
+
+  addComment = async (filmCard, comment) => {
+    const response = await this.#load({
+      url: `comments/${filmCard.id}`,
+      method: Method.POST,
+      body: JSON.stringify(this.#adaptCommentToServer(comment)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+
+    const parsedResponse = await ApiService.parseResponce(response);
+
+    return parsedResponse;
+  }
+
+  deleteComment = async (comment) => {
+    const response = await this.#load({
+      url: `comments/${comment.id}`,
+      method: Method.DELETE,
+    });
+
+    return response;
   }
 
   #load = async ({
@@ -107,6 +129,18 @@ export default class ApiService {
     delete adaptedFilmCard.userDetails;
 
     return adaptedFilmCard;
+  }
+
+  #adaptCommentToServer = (comment) => {
+    const adaptedComment = {...comment,
+      'comment': comment.text,
+    };
+
+    delete adaptedComment.id;
+    delete adaptedComment.text;
+    delete adaptedComment.date;
+
+    return adaptedComment;
   }
 
   static parseResponce = (responce) => responce.json();

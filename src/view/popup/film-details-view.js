@@ -28,9 +28,9 @@ const renderGenres = (genresArray) => {
   return genres.join('');
 };
 
-const createEmojiItemTemplate = (emoji, card) => (
+const createEmojiItemTemplate = (emoji, card, isSaving) => (
   `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}"
-    value="${emoji}" ${card.activeEmoji === emoji ? 'checked' : ''}>
+    value="${emoji}" ${card.activeEmoji === emoji ? 'checked' : ''} ${isSaving ? 'disabled' : ''}>
   <label class="film-details__emoji-label" for="emoji-${emoji}">
     <img data-emoji="${emoji}" src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
   </label>`
@@ -50,7 +50,10 @@ const createFilmDetailsTemplate = (card, comments) => {
     runtime,
     genre,
     description,
-    userDetails
+    userDetails,
+    isDeleting,
+    isSaving,
+    commentToDeleteId,
   } = card;
 
   const country = release.releaseCountry;
@@ -59,8 +62,8 @@ const createFilmDetailsTemplate = (card, comments) => {
   const favoriteClassName = userDetails.favorite;
 
   const commentsNumber = comments.length;
-  const commentsList = comments.map((comment) => new CommentsView(comment).template).join('');
-  const emojiList = EMOTIONS.map((emoji) => createEmojiItemTemplate(emoji, card)).join('');
+  const commentsList = comments.map((comment) => new CommentsView(comment, isDeleting, commentToDeleteId).template).join('');
+  const emojiList = EMOTIONS.map((emoji) => createEmojiItemTemplate(emoji, card, isSaving)).join('');
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -149,7 +152,7 @@ const createFilmDetailsTemplate = (card, comments) => {
             </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${card.commentText ? card.commentText : ''}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isSaving ? 'disabled' : ''}>${card.commentText ? card.commentText : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -292,7 +295,9 @@ export default class FilmDetailsView extends SmartView {
   static parseMovieToData = (movie) => ({
     ...movie,
     activeEmoji: movie.activeEmoji,
-    commentText: movie.commentText
+    commentText: movie.commentText,
+    isDeleting: false,
+    isSaving: false,
   });
 
   static parseDataToMovie = (data) => {
