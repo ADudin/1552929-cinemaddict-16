@@ -125,7 +125,7 @@ export default class MovieBoardPresenter {
       case UserAction.ADD_COMMENT:
         this.#movieCardPresenter.get(update.id).setSaving();
         try {
-          this.#commentsModel.addComment(updateType, update, comment);
+          await this.#commentsModel.addComment(updateType, update, comment);
         } catch(err) {
           this.#movieCardPresenter.get(update.id).setSaveAborting();
         }
@@ -133,7 +133,7 @@ export default class MovieBoardPresenter {
       case UserAction.DELETE_COMMENT:
         this.#movieCardPresenter.get(update.id).setDeleting(comment);
         try {
-          this.#commentsModel.deleteComment(updateType, update, comment);
+          await this.#commentsModel.deleteComment(updateType, update, comment);
         } catch(err) {
           this.#movieCardPresenter.get(update.id).setDeleteAborting(comment);
         }
