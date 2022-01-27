@@ -1,8 +1,10 @@
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import {MAX_COMMENTS_COUNT} from '../consts';
 
 dayjs.extend(isSameOrAfter);
+dayjs.extend(relativeTime);
 
 export const getRandomInteger = (a = 0, b = 1) => { // Генерация случайного числа (модуль: film.js);
   const lower = Math.ceil(Math.min(a, b));
@@ -44,7 +46,7 @@ export const getReleaseDateForPopup = (key) => { // Преобразование
 };
 
 export const getCommentDate = (date) => { // Преобразование даты комментария в заданный формат (модуль: comments-view.js);
-  const commentDate = dayjs(date).format('YYYY/MM/DD HH:mm');
+  const commentDate = dayjs(date).fromNow();
 
   return commentDate;
 };

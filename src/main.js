@@ -51,4 +51,4 @@ moviesModel.init().finally(() => {
   render(siteFooterElement, new FooterStatisticsView(), RenderPosition.BEFOREEND);
 });
 
-export {/*commentsModel,*/handleSiteMenuClick};
+export {handleSiteMenuClick};
