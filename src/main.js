@@ -48,7 +48,7 @@ filterPresenter.init();
 movieBoardPresenter.init();
 moviesModel.init().finally(() => {
   render(siteHeaderElement, new UserProfileView(moviesModel), RenderPosition.BEFOREEND);
-  render(siteFooterElement, new FooterStatisticsView(), RenderPosition.BEFOREEND);
+  render(siteFooterElement, new FooterStatisticsView(moviesModel), RenderPosition.BEFOREEND);
 });
 
 export {handleSiteMenuClick};
