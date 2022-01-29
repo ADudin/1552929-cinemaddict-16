@@ -5,6 +5,7 @@ import ShowMoreBtnView from '../view/show-more-btn-view.js';
 import NoFilmsView from '../view/no-films-view.js';
 import FilmsListContainerView from '../view/film-list-container-view.js';
 import LoadingView from '../view/loading-view.js';
+import ErrorView from '../view/error-view.js';
 
 import {
   RenderPosition,
@@ -45,6 +46,7 @@ export default class MovieBoardPresenter {
   #topRatedMoviesListComponent = new FilmsListView('films-list--extra', '','Top rated');
   #mostCommentedMoviesListComponent = new FilmsListView('films-list--extra','', 'Most Commented');
   #loadingComponent = new LoadingView();
+  #errorComponent = null;
   #allMoviesListContainer = new FilmsListContainerView();
   #topRatedMoviesListContainer = new FilmsListContainerView();
   #mostCommentedMoviesListContainer = new FilmsListContainerView();
@@ -88,9 +90,6 @@ export default class MovieBoardPresenter {
 
     render(this.#mainContainer, this.#filmSectionComponent, RenderPosition.AFTERBEGIN);
     render(this.#filmSectionComponent, this.#allMoviesListComponent, RenderPosition.AFTERBEGIN);
-    render(this.#filmSectionComponent, this.#topRatedMoviesListComponent, RenderPosition.BEFOREEND);
-    render(this.#filmSectionComponent, this.#mostCommentedMoviesListComponent, RenderPosition.BEFOREEND);
-
     render(this.#allMoviesListComponent, this.#allMoviesListContainer, RenderPosition.BEFOREEND);
 
     this.#moviesModel.addObserver(this.#handleModelEvent);
@@ -121,11 +120,15 @@ export default class MovieBoardPresenter {
         this.#moviesModel.updateFilmCard(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
-        this.#movieCardPresenter.get(update.id).setSaving();
+        if (this.#movieCardPresenter.has(update.id)) {
+          this.#movieCardPresenter.get(update.id).setSaving();
+        }
         try {
           await this.#commentsModel.addComment(updateType, update, comment);
         } catch(err) {
-          this.#movieCardPresenter.get(update.id).setSaveAborting();
+          if (this.#movieCardPresenter.has(update.id)) {
+            this.#movieCardPresenter.get(update.id).setSaveAborting();
+          }
         }
         break;
       case UserAction.DELETE_COMMENT:
@@ -160,6 +163,7 @@ export default class MovieBoardPresenter {
         this.#renderMovieBoard();
         break;
       case UpdateType.MAJOR:
+        remove(this.#errorComponent);
         this.#clearMovieBoard({resetRenderedFilmCardsCount: true, resetSortType: true});
         this.#renderMovieBoard();
         break;
@@ -168,6 +172,14 @@ export default class MovieBoardPresenter {
         remove(this.#loadingComponent);
         this.#renderMovieBoard();
         break;
+      case UpdateType.ERROR:
+        this.#movieCardPresenter.forEach((presenter) => presenter.resetView());
+        this.#topRatedCardPresenter.forEach((presenter) => presenter.resetView());
+        this.#mostCommentedCardPresenter.forEach((presenter) => presenter.resetView());
+        this.#clearMovieBoard({resetRenderedFilmCardsCount: true, resetSortType: true});
+        remove(this.#topRatedMoviesListComponent);
+        remove(this.#mostCommentedMoviesListComponent);
+        this.#renderError(data);
     }
   }
 
@@ -206,6 +218,11 @@ export default class MovieBoardPresenter {
     render(this.#mainContainer, this.#loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
+  #renderError = (message) => {
+    this.#errorComponent = new ErrorView(message);
+    render(this.#mainContainer, this.#errorComponent, RenderPosition.AFTERBEGIN);
+  }
+
   #renderNoFilmCards = () => {
     this.#noFilmsComponent = new NoFilmsView(this.#filterType);
     render(this.#mainContainer, this.#noFilmsComponent, RenderPosition.AFTERBEGIN);
@@ -238,9 +255,10 @@ export default class MovieBoardPresenter {
   }
 
   #renderTopRatedFilms = () => {
-    if (this.filmCards.some((filmCard) => filmCard.totalRating > 0)) {
+    if (this.#moviesModel.filmCards.length !== 0 || this.#moviesModel.filmCards.some((filmCard) => filmCard.totalRating > 0)) {
+      render(this.#filmSectionComponent, this.#topRatedMoviesListComponent, RenderPosition.BEFOREEND);
       render(this.#topRatedMoviesListComponent, this.#topRatedMoviesListContainer, RenderPosition.BEFOREEND);
-      const topRatedFilms = getTopRatedFilms(this.filmCards, TOP_RATED_FILMS_COUNT);
+      const topRatedFilms = getTopRatedFilms(this.#moviesModel.filmCards, TOP_RATED_FILMS_COUNT);
 
       for (let i = 0; i < TOP_RATED_FILMS_COUNT; i++) {
         this.#renderMovieCard(this.#topRatedMoviesListContainer, topRatedFilms[i], this.#topRatedCardPresenter);
@@ -249,9 +267,10 @@ export default class MovieBoardPresenter {
   }
 
   #renderMostCommentedFilms = () => {
-    if (this.filmCards.some((filmCard) => filmCard.comments.length > 0)) {
+    if (this.#moviesModel.filmCards.length !== 0 || this.#moviesModel.filmCards.some((filmCard) => filmCard.comments.length > 0)) {
+      render(this.#filmSectionComponent, this.#mostCommentedMoviesListComponent, RenderPosition.BEFOREEND);
       render(this.#mostCommentedMoviesListComponent, this.#mostCommentedMoviesListContainer, RenderPosition.BEFOREEND);
-      const mostCommentedFilms = getMostCommentedFilms(this.filmCards, MOST_COMMENTED_FILMS_COUNT);
+      const mostCommentedFilms = getMostCommentedFilms(this.#moviesModel.filmCards, MOST_COMMENTED_FILMS_COUNT);
 
       for (let i = 0; i < MOST_COMMENTED_FILMS_COUNT; i++) {
         this.#renderMovieCard(this.#mostCommentedMoviesListContainer, mostCommentedFilms[i], this.#mostCommentedCardPresenter);
@@ -296,6 +315,8 @@ export default class MovieBoardPresenter {
 
     if (filmCardsCount === 0) {
       this.#renderNoFilmCards();
+      this.#renderTopRatedFilms();
+      this.#renderMostCommentedFilms();
 
       return;
     }

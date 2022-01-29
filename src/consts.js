@@ -12,15 +12,6 @@ export const EMOTIONS = [
   'angry',
 ];
 
-export const NAMES = [
-  'James Abdnor',
-  'Spencer Abrakham',
-  'Sandy Adams',
-  'Carl Albert',
-  'Maryone Allen',
-  'Tom Beville',
-];
-
 export const FILM_COUNT_PER_STEP = 5;
 export const TOP_RATED_FILMS_COUNT = 2;
 export const MOST_COMMENTED_FILMS_COUNT = 2;
@@ -44,6 +35,7 @@ export const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  ERROR: 'ERROR',
 };
 
 export const FilterType = {

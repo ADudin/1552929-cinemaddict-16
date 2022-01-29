@@ -1,23 +1,9 @@
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {MAX_COMMENTS_COUNT} from '../consts';
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(relativeTime);
-
-export const getRandomInteger = (a = 0, b = 1) => { // Генерация случайного числа (модуль: film.js);
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a,b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-export const getRandomArrayElement = (array) => { // Генерация случайного элемента массива (модуль: film.js);
-  const randomIndex = getRandomInteger(0, array.length - 1);
-
-  return array[randomIndex];
-};
 
 export const getRuntimeFromMinutes = (mins) => { // Преобразование продолжительности фильма в заданный формат (модули: film-card-view.js, film-details-view.js);
   const HOURS_ABB = 'h ';
@@ -95,17 +81,6 @@ export const checkIsActiveClassNamePopup = (key) => { // Проверка для
 
 export const formatFirstLetterToUpperCase = (title) => (title[0].toUpperCase() + title.slice(1)); // Формат с большой буквы (модуль: site-menu-view.js);
 
-export const getCommentsIdArray = () => { // Создание массива id комментариев (модуль: film.js);
-  const commentsId = [];
-  const idCount = getRandomInteger(0, MAX_COMMENTS_COUNT);
-
-  for (let i = 0; i < idCount; i++) {
-    commentsId.push(i);
-  }
-
-  return commentsId;
-};
-
 export const getTopRatedFilms = (films, filmsCount) => { // Сортировка карточек фильмов по рейтингу (модуль: main.js);
   const sortedFilms = films.slice().sort((a, b) => b.totalRating - a.totalRating).slice(0, filmsCount);
 
@@ -169,17 +144,17 @@ const getMaxObjectKey = (obj) => {
 };
 
 export const getCurrentGenresObject = (movies) => { // statistic-view.js
-  const genresArray = [];
-  const currentGenresObject = {};
+  const genres = [];
+  const currentGenres = {};
 
-  movies.forEach((movie) => genresArray.push(movie.genre));
-  genresArray.flat().forEach((item) => {currentGenresObject[item] = (currentGenresObject[item] || 0) + 1;});
+  movies.forEach((movie) => genres.push(movie.genre));
+  genres.flat().forEach((item) => {currentGenres[item] = (currentGenres[item] || 0) + 1;});
 
-  return currentGenresObject;
+  return currentGenres;
 };
 
 export const getTopGenreFromMovies = (movies) => { // statistic-view.js
-  const genresObject = getCurrentGenresObject(movies);
+  const genres = getCurrentGenresObject(movies);
 
-  return getMaxObjectKey(genresObject).slice(0, 1);
+  return getMaxObjectKey(genres).slice(0, 1);
 };

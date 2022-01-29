@@ -3,10 +3,12 @@ import AbstractObsrvable from '../utils/abstract-observable';
 export default class CommentsModel extends AbstractObsrvable {
   #apiService = null;
   #comments = [];
+  #moviesModel = null;
 
-  constructor(apiService) {
+  constructor(apiService, moviesModel) {
     super();
     this.#apiService = apiService;
+    this.#moviesModel = moviesModel;
   }
 
   get comments() {
@@ -18,7 +20,7 @@ export default class CommentsModel extends AbstractObsrvable {
       const comments = await this.#apiService.getComments(filmCard);
       this.#comments = comments.map(this.#adaptToClient);
     } catch(err) {
-      this.#comments = [];
+      this.#comments = null;
     }
 
     return this.#comments;
@@ -43,6 +45,7 @@ export default class CommentsModel extends AbstractObsrvable {
       const response = await this.#apiService.addComment(update, comment);
       this.#comments = response.comments.map((item) => this.#adaptToClient(item));
       this._notify(updateType, update);
+      this.#moviesModel.addComment(updateType, response.movie);
     } catch (err) {
       throw new Error('Can\'t add comment');
     }

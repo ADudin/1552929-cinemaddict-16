@@ -5,16 +5,10 @@ import {
   getRuntimeFromMinutes,
   getReleaseDateForPopup,
   checkIsActiveClassNamePopup,
-  getRandomArrayElement
 } from '../../utils/common';
 
 import CommentsView from './comments-view';
-import {
-  EMOTIONS,
-  NAMES
-} from '../../consts';
-import dayjs from 'dayjs';
-import {nanoid} from 'nanoid';
+import {EMOTIONS} from '../../consts';
 
 const activeButtonClassName = 'film-details__control-button--active';
 
@@ -28,12 +22,18 @@ const renderGenres = (genresArray) => {
   return genres.join('');
 };
 
-const createEmojiItemTemplate = (emoji, card, isSaving) => (
+const createEmojiItemTemplate = (emoji, card, isSaving, formDisabled) => (
   `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}"
-    value="${emoji}" ${card.activeEmoji === emoji ? 'checked' : ''} ${isSaving ? 'disabled' : ''}>
+    value="${emoji}" ${card.activeEmoji === emoji ? 'checked' : ''} ${isSaving || formDisabled ? 'disabled' : ''}>
   <label class="film-details__emoji-label" for="emoji-${emoji}">
     <img data-emoji="${emoji}" src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
   </label>`
+);
+
+const renderNoCommentsError = () => (
+  `<li class="film-details__comment">
+    <p>Can't load comments. Server connection error</p>
+  </li>`
 );
 
 const createFilmDetailsTemplate = (card, comments) => {
@@ -61,9 +61,19 @@ const createFilmDetailsTemplate = (card, comments) => {
   const alreadyWatchedClassName = userDetails.alreadyWatched;
   const favoriteClassName = userDetails.favorite;
 
-  const commentsNumber = comments.length;
-  const commentsList = comments.map((comment) => new CommentsView(comment, isDeleting, commentToDeleteId).template).join('');
-  const emojiList = EMOTIONS.map((emoji) => createEmojiItemTemplate(emoji, card, isSaving)).join('');
+
+  let commentsList = null;
+  let formDisabled = false;
+
+  if (comments === null) {
+    commentsList = renderNoCommentsError();
+    formDisabled = true;
+  } else {
+    const sortedComments = comments.sort((a, b) => new Date(a.date) - new Date(b.date));
+    commentsList = sortedComments.map((comment) => new CommentsView(comment, isDeleting, commentToDeleteId).template).join('');
+  }
+
+  const emojiList = EMOTIONS.map((emoji) => createEmojiItemTemplate(emoji, card, isSaving, formDisabled)).join('');
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -139,7 +149,7 @@ const createFilmDetailsTemplate = (card, comments) => {
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">
-            Comments <span class="film-details__comments-count">${commentsNumber}</span>
+            Comments <span class="film-details__comments-count">${card.comments.length}</span>
           </h3>
 
           <ul class="film-details__comments-list">
@@ -152,7 +162,7 @@ const createFilmDetailsTemplate = (card, comments) => {
             </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isSaving ? 'disabled' : ''}>${card.commentText ? card.commentText : ''}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isSaving || formDisabled ? 'disabled' : ''}>${card.commentText ? card.commentText : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -167,20 +177,18 @@ const createFilmDetailsTemplate = (card, comments) => {
 
 export default class FilmDetailsView extends SmartView {
   #comments = null;
-  #activeEmoji = null;
 
   constructor (card, comments) {
     super();
     this._data = FilmDetailsView.parseMovieToData(card);
     this.#comments = comments;
-    this.#activeEmoji = card.activeEmoji;
 
     this.#setInnerHandlers();
   }
 
   get template() {
 
-    return createFilmDetailsTemplate(this._data, this.#comments, this.#activeEmoji);
+    return createFilmDetailsTemplate(this._data, this.#comments);
   }
 
   restoreHandlers = () => {
@@ -222,7 +230,7 @@ export default class FilmDetailsView extends SmartView {
 
   setAddNewCommentEventHandler = (callback) => {
     this._callback.addNewCommentEvent = callback;
-    document.addEventListener('keydown', this.#addNewCommentKeyDownHandler);
+    this.element.addEventListener('keydown', this.#addNewCommentKeyDownHandler);
   }
 
   #setInnerHandlers = () => {
@@ -234,19 +242,19 @@ export default class FilmDetailsView extends SmartView {
 
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.favoriteClick(FilmDetailsView.parseDataToMovie(this._data));
+    this._callback.favoriteClick(this._data);
     evt.target.classList.toggle(activeButtonClassName); //Для визуализации при активном фильтре и открытом попапе, т.к. карточка фильма удалится из списка, а попап останется
   }
 
   #watchlistClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.watchlistClick(FilmDetailsView.parseDataToMovie(this._data));
+    this._callback.watchlistClick(this._data);
     evt.target.classList.toggle(activeButtonClassName); //Для визуализации при активном фильтре и открытом попапе, т.к. карточка фильма удалится из списка, а попап останется
   }
 
   #alreadyWatchedClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.alreadyWatchedClick(FilmDetailsView.parseDataToMovie(this._data));
+    this._callback.alreadyWatchedClick(this._data);
     evt.target.classList.toggle(activeButtonClassName); //Для визуализации при активном фильтре и открытом попапе, т.к. карточка фильма удалится из списка, а попап останется
   }
 
@@ -280,11 +288,8 @@ export default class FilmDetailsView extends SmartView {
     if ((evt.metaKey || evt.ctrlKey) && evt.key === 'Enter') {
       evt.preventDefault();
       const newComment = new Object();
-      newComment.id = nanoid();
       newComment.text = this._data.commentText;
       newComment.emotion = this._data.activeEmoji;
-      newComment.author = getRandomArrayElement(NAMES);
-      newComment.date = dayjs().format('YYYY/MM/DD HH:mm');
       if (newComment.text !== undefined && newComment.emotion !== undefined) {
         this._callback.addNewCommentEvent(newComment);
         document.removeEventListener('keydown', this.#addNewCommentKeyDownHandler);
@@ -299,18 +304,4 @@ export default class FilmDetailsView extends SmartView {
     isDeleting: false,
     isSaving: false,
   });
-
-  static parseDataToMovie = (data) => {
-    const movie = {...data};
-
-    if (!movie) {
-      movie.activeEmoji = null;
-      movie.commentText = null;
-    }
-
-    delete movie.activeEmoji;
-    delete movie.commentText;
-
-    return movie;
-  }
 }

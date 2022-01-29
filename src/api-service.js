@@ -108,7 +108,7 @@ export default class ApiService {
       'user_details': {
         'watchlist': filmCard.userDetails.watchlist,
         'already_watched': filmCard.userDetails.alreadyWatched,
-        'watching_date': filmCard.userDetails.watchingDate instanceof Date ? filmCard.userDetails.watchingDate.toISOString() : null,
+        'watching_date': filmCard.userDetails.watchingDate,
         'favorite': filmCard.userDetails.favorite,
       },
       'comments': filmCard.comments,
@@ -127,6 +127,9 @@ export default class ApiService {
     delete adaptedFilmCard.genre;
     delete adaptedFilmCard.description;
     delete adaptedFilmCard.userDetails;
+
+    delete adaptedFilmCard.activeEmoji;
+    delete adaptedFilmCard.commentText;
 
     return adaptedFilmCard;
   }

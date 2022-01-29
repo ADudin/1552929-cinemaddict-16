@@ -88,9 +88,11 @@ export default class MovieCardPresenter {
   }
 
   setSaving = () => {
-    this.#filmDetailsSection.updateData({
-      isSaving: true,
-    });
+    if (this.#filmDetailsSection) {
+      this.#filmDetailsSection.updateData({
+        isSaving: true,
+      });
+    }
   }
 
   setDeleting = (comment) => {
@@ -137,7 +139,7 @@ export default class MovieCardPresenter {
     try {
       comments = await this.#commentsModel.init(this.#filmCard);
     } catch(err) {
-      comments = [];
+      comments = null;
     }
 
     this.#changeMode();
@@ -151,8 +153,10 @@ export default class MovieCardPresenter {
   }
 
   #closePopup = () => {
-    remove(this.#filmDetailsSection);
+    delete this.#filmCard.activeEmoji;
+    delete this.#filmCard.commentText;
 
+    remove(this.#filmDetailsSection);
     this.#documentBody.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this.#escKeyDownHandler);
     this.#mode = Mode.DEFAULT;
@@ -165,32 +169,79 @@ export default class MovieCardPresenter {
     }
   }
 
-  #handleFavoriteClick = () => {
+  #handleFavoriteClick = (data) => {
+    if (data) {
+      this.#changeData(
+        UserAction.UPDATE_FILMCARD,
+        this.#filterType === FilterType.FAVORITE && this.#filmCard.userDetails.favorite === true ? UpdateType.MINOR : UpdateType.PATCH,
+        {...this.#filmCard,
+          userDetails:{...this.#filmCard.userDetails, favorite: !this.#filmCard.userDetails.favorite},
+          activeEmoji: data.activeEmoji,
+          commentText: data.commentText,
+        }
+      );
+
+      return;
+    }
     this.#changeData(
       UserAction.UPDATE_FILMCARD,
       this.#filterType === FilterType.FAVORITE && this.#filmCard.userDetails.favorite === true ? UpdateType.MINOR : UpdateType.PATCH,
-      {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, favorite: !this.#filmCard.userDetails.favorite}}
+      {...this.#filmCard,
+        userDetails:{...this.#filmCard.userDetails, favorite: !this.#filmCard.userDetails.favorite},
+      }
     );
   }
 
-  #handleWatchlistClick = () => {
+  #handleWatchlistClick = (data) => {
+    if (data) {
+      this.#changeData(
+        UserAction.UPDATE_FILMCARD,
+        this.#filterType === FilterType.WATCHLIST && this.#filmCard.userDetails.watchlist === true ? UpdateType.MINOR : UpdateType.PATCH,
+        {...this.#filmCard,
+          userDetails:{...this.#filmCard.userDetails, watchlist: !this.#filmCard.userDetails.watchlist},
+          activeEmoji: data.activeEmoji,
+          commentText: data.commentText,
+        }
+      );
+
+      return;
+    }
     this.#changeData(
       UserAction.UPDATE_FILMCARD,
       this.#filterType === FilterType.WATCHLIST && this.#filmCard.userDetails.watchlist === true ? UpdateType.MINOR : UpdateType.PATCH,
-      {...this.#filmCard, userDetails:{...this.#filmCard.userDetails, watchlist: !this.#filmCard.userDetails.watchlist}}
+      {...this.#filmCard,
+        userDetails:{...this.#filmCard.userDetails, watchlist: !this.#filmCard.userDetails.watchlist},
+      }
     );
   }
 
-  #handleAlreadyWatchedClick = () => {
+  #handleAlreadyWatchedClick = (data) => {
+    if (data) {
+      this.#changeData(
+        UserAction.UPDATE_FILMCARD,
+        this.#filterType === FilterType.HISTORY && this.#filmCard.userDetails.alreadyWatched === true ? UpdateType.MINOR : UpdateType.PATCH,
+        {...this.#filmCard,
+          userDetails: {
+            ...this.#filmCard.userDetails,
+            alreadyWatched: !this.#filmCard.userDetails.alreadyWatched,
+            watchingDate: !this.#filmCard.userDetails.alreadyWatched ? new Date() : null
+          },
+          activeEmoji: data.activeEmoji,
+          commentText: data.commentText,
+        }
+      );
+
+      return;
+    }
     this.#changeData(
       UserAction.UPDATE_FILMCARD,
       this.#filterType === FilterType.HISTORY && this.#filmCard.userDetails.alreadyWatched === true ? UpdateType.MINOR : UpdateType.PATCH,
-      {...this.#filmCard, userDetails:
-        {
+      {...this.#filmCard,
+        userDetails: {
           ...this.#filmCard.userDetails,
           alreadyWatched: !this.#filmCard.userDetails.alreadyWatched,
           watchingDate: !this.#filmCard.userDetails.alreadyWatched ? new Date() : null
-        }
+        },
       }
     );
   }
@@ -220,7 +271,6 @@ export default class MovieCardPresenter {
   }
 
   #handleAddNewCommentEvent = (newComment) => {
-    this.#filmCard.comments.push(newComment.id);
     this.#changeData(
       UserAction.ADD_COMMENT,
       UpdateType.PATCH,

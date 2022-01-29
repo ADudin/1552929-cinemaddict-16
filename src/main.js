@@ -19,7 +19,7 @@ import FilterModel from './model/filter-model.js';
 import ApiService from './api-service.js';
 
 const moviesModel = new MoviesModel(new ApiService(END_POINT, AUTHORIZATION));
-const commentsModel = new CommentsModel(new ApiService(END_POINT, AUTHORIZATION));
+const commentsModel = new CommentsModel(new ApiService(END_POINT, AUTHORIZATION), moviesModel);
 const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.header');
