@@ -50,12 +50,6 @@ export const getShortDescription = (text) => { // Преобразование �
   return description.substring(0, LIMIT - 1) + etc;
 };
 
-export const getFirstArrayElement = (array) => { // Получение первого элемента массива (модуль: film-card-view.js);
-  const genre = array[0];
-
-  return genre;
-};
-
 export const checkIsActiveClassName = (key) => { // Проверка для добаления активного класса кнопкам (модуль: film-card-view.js, film-details-view.js);
   const className = '';
   const activeClassName = 'film-card__controls-item--active';

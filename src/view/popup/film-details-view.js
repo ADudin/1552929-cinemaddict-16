@@ -12,11 +12,11 @@ import {EMOTIONS} from '../../consts';
 
 const activeButtonClassName = 'film-details__control-button--active';
 
-const renderGenres = (genresArray) => {
+const renderGenres = (items) => {
   const genres = [];
 
-  for (let i = 0; i < genresArray.length; i ++) {
-    genres.push(`<span class="film-details__genre">${genresArray[i]}</span>`);
+  for (let i = 0; i < items.length; i ++) {
+    genres.push(`<span class="film-details__genre">${items[i]}</span>`);
   }
 
   return genres.join('');

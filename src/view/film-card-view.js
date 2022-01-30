@@ -1,7 +1,6 @@
 import {
   getRuntimeFromMinutes,
   getShortDescription,
-  getFirstArrayElement,
   checkIsActiveClassName
 } from '../utils/common';
 
@@ -33,7 +32,7 @@ const createFilmCardTemplate = (card) => {
       <p class="film-card__info">
         <span class="film-card__year">${releaseYear}</span>
         <span class="film-card__duration">${getRuntimeFromMinutes(runtime)}</span>
-        <span class="film-card__genre">${getFirstArrayElement(genre)}</span>
+        <span class="film-card__genre">${(genre[0])}</span>
       </p>
       <img src="${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${getShortDescription(description)}</p>

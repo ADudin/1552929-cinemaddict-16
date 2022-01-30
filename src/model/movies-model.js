@@ -19,7 +19,8 @@ export default class MoviesModel extends AbstractObsrvable {
       const filmCards = await this.#apiService.filmCards;
       this.#filmCards = filmCards.map(this.#adaptToClient);
     } catch(err) {
-      this.#filmCards = null;
+      const message = 'Can\'t load movies. Please check connection with server.';
+      this._notify(UpdateType.ERROR, message);
     }
 
     this._notify(UpdateType.INIT);
@@ -42,7 +43,7 @@ export default class MoviesModel extends AbstractObsrvable {
 
       this._notify(updateType, update);
     } catch(err) {
-      const message = 'Can\'t update unexisting movie. Please check server connection';
+      const message = 'Can\'t update unexisting movie. Please check connection with server.';
       this._notify(UpdateType.ERROR, message);
     }
   }

@@ -59,6 +59,7 @@ export default class MovieBoardPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
   #isLoading = true;
+  #isError = false;
 
   constructor(mainContainer, moviesModel, commentsModel, filterModel) {
     this.#mainContainer = mainContainer;
@@ -173,6 +174,7 @@ export default class MovieBoardPresenter {
         this.#renderMovieBoard();
         break;
       case UpdateType.ERROR:
+        this.#isError = true;
         this.#movieCardPresenter.forEach((presenter) => presenter.resetView());
         this.#topRatedCardPresenter.forEach((presenter) => presenter.resetView());
         this.#mostCommentedCardPresenter.forEach((presenter) => presenter.resetView());
@@ -313,7 +315,7 @@ export default class MovieBoardPresenter {
 
     const filmCardsCount = this.filmCards.length;
 
-    if (filmCardsCount === 0) {
+    if (filmCardsCount === 0 && !this.#isError) {
       this.#renderNoFilmCards();
       this.#renderTopRatedFilms();
       this.#renderMostCommentedFilms();
