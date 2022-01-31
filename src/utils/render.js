@@ -1,10 +1,6 @@
 import {RenderPosition} from '../consts';
 import AbstractView from '../view/abstract-view';
 
-export const renderTemplate = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 export const render = (container, element, place) => {
   const parent = container instanceof AbstractView ? container.element : container;
   const child = element instanceof AbstractView ? element.element : element;

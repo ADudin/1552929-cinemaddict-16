@@ -96,10 +96,12 @@ export default class MovieCardPresenter {
   }
 
   setDeleting = (comment) => {
-    this.#filmDetailsSection.updateData({
-      isDeleting: true,
-      commentToDeleteId: comment.id,
-    });
+    if (this.#filmDetailsSection) {
+      this.#filmDetailsSection.updateData({
+        isDeleting: true,
+        commentToDeleteId: comment.id,
+      });
+    }
   }
 
   setSaveAborting = () => {
@@ -108,8 +110,11 @@ export default class MovieCardPresenter {
         isSaving: false,
       });
     };
-    const newCommentAddElement = document.querySelector('.film-details__new-comment');
-    this.#filmDetailsSection.shake(resetFormState, newCommentAddElement);
+
+    if (this.#filmDetailsSection) {
+      const newCommentAddElement = document.querySelector('.film-details__new-comment');
+      this.#filmDetailsSection.shake(resetFormState, newCommentAddElement);
+    }
   }
 
   setDeleteAborting = (comment) => {
@@ -119,9 +124,12 @@ export default class MovieCardPresenter {
         commentToDeleteId: null,
       });
     };
-    const commentToDeleteElementId = this.#filmDetailsSection._data.comments.filter((item) => item === comment.id);
-    const commentToDeleteElement = document.getElementById(commentToDeleteElementId);
-    this.#filmDetailsSection.shake(resetFormState, commentToDeleteElement);
+
+    if (this.#filmDetailsSection) {
+      const commentToDeleteElementId = this.#filmDetailsSection._data.comments.filter((item) => item === comment.id);
+      const commentToDeleteElement = document.getElementById(commentToDeleteElementId);
+      this.#filmDetailsSection.shake(resetFormState, commentToDeleteElement);
+    }
   }
 
   #createPopup = (comments) => {

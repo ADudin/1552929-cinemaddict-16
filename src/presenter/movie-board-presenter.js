@@ -124,20 +124,48 @@ export default class MovieBoardPresenter {
         if (this.#movieCardPresenter.has(update.id)) {
           this.#movieCardPresenter.get(update.id).setSaving();
         }
+        if (this.#topRatedCardPresenter.has(update.id)) {
+          this.#topRatedCardPresenter.get(update.id).setSaving();
+        }
+        if (this.#mostCommentedCardPresenter.has(update.id)) {
+          this.#mostCommentedCardPresenter.get(update.id).setSaving();
+        }
         try {
           await this.#commentsModel.addComment(updateType, update, comment);
         } catch(err) {
           if (this.#movieCardPresenter.has(update.id)) {
             this.#movieCardPresenter.get(update.id).setSaveAborting();
           }
+          if (this.#topRatedCardPresenter.has(update.id)) {
+            this.#topRatedCardPresenter.get(update.id).setSaveAborting();
+          }
+          if (this.#mostCommentedCardPresenter.has(update.id)) {
+            this.#mostCommentedCardPresenter.get(update.id).setSaveAborting();
+          }
         }
         break;
       case UserAction.DELETE_COMMENT:
-        this.#movieCardPresenter.get(update.id).setDeleting(comment);
+        if (this.#movieCardPresenter.has(update.id)) {
+          this.#movieCardPresenter.get(update.id).setDeleting(comment);
+        }
+        if (this.#topRatedCardPresenter.has(update.id)) {
+          this.#topRatedCardPresenter.get(update.id).setDeleting(comment);
+        }
+        if (this.#mostCommentedCardPresenter.has(update.id)) {
+          this.#mostCommentedCardPresenter.get(update.id).setDeleting(comment);
+        }
         try {
           await this.#commentsModel.deleteComment(updateType, update, comment);
         } catch(err) {
-          this.#movieCardPresenter.get(update.id).setDeleteAborting(comment);
+          if (this.#movieCardPresenter.has(update.id)) {
+            this.#movieCardPresenter.get(update.id).setDeleteAborting(comment);
+          }
+          if (this.#topRatedCardPresenter.has(update.id)) {
+            this.#topRatedCardPresenter.get(update.id).setDeleteAborting(comment);
+          }
+          if (this.#mostCommentedCardPresenter.has(update.id)) {
+            this.#mostCommentedCardPresenter.get(update.id).setDeleteAborting(comment);
+          }
         }
         break;
     }
@@ -153,6 +181,10 @@ export default class MovieBoardPresenter {
 
         if(this.#topRatedCardPresenter.has(data.id)) {
           this.#topRatedCardPresenter.get(data.id).init(data);
+        }
+
+        if(this.#mostCommentedCardPresenter.has(data.id)) {
+          this.#mostCommentedCardPresenter.get(data.id).init(data);
         }
 
         this.#mostCommentedCardPresenter.forEach((presenter) => presenter.destroy());
@@ -257,7 +289,7 @@ export default class MovieBoardPresenter {
   }
 
   #renderTopRatedFilms = () => {
-    if (this.#moviesModel.filmCards.length !== 0 || this.#moviesModel.filmCards.some((filmCard) => filmCard.totalRating > 0)) {
+    if (this.#moviesModel.filmCards.length !== 0 && this.#moviesModel.filmCards.some((filmCard) => filmCard.totalRating > 0)) {
       render(this.#filmSectionComponent, this.#topRatedMoviesListComponent, RenderPosition.BEFOREEND);
       render(this.#topRatedMoviesListComponent, this.#topRatedMoviesListContainer, RenderPosition.BEFOREEND);
       const topRatedFilms = getTopRatedFilms(this.#moviesModel.filmCards, TOP_RATED_FILMS_COUNT);
@@ -269,7 +301,7 @@ export default class MovieBoardPresenter {
   }
 
   #renderMostCommentedFilms = () => {
-    if (this.#moviesModel.filmCards.length !== 0 || this.#moviesModel.filmCards.some((filmCard) => filmCard.comments.length > 0)) {
+    if (this.#moviesModel.filmCards.length !== 0 && this.#moviesModel.filmCards.some((filmCard) => filmCard.comments.length > 0)) {
       render(this.#filmSectionComponent, this.#mostCommentedMoviesListComponent, RenderPosition.BEFOREEND);
       render(this.#mostCommentedMoviesListComponent, this.#mostCommentedMoviesListContainer, RenderPosition.BEFOREEND);
       const mostCommentedFilms = getMostCommentedFilms(this.#moviesModel.filmCards, MOST_COMMENTED_FILMS_COUNT);

@@ -76,13 +76,13 @@ export const checkIsActiveClassNamePopup = (key) => { // Проверка для
 export const formatFirstLetterToUpperCase = (title) => (title[0].toUpperCase() + title.slice(1)); // Формат с большой буквы (модуль: site-menu-view.js);
 
 export const getTopRatedFilms = (films, filmsCount) => { // Сортировка карточек фильмов по рейтингу (модуль: main.js);
-  const sortedFilms = films.slice().sort((a, b) => b.totalRating - a.totalRating).slice(0, filmsCount);
+  const sortedFilms = films.filter((film) => film.totalRating > 0).sort((a, b) => b.totalRating - a.totalRating).slice(0, filmsCount);
 
   return sortedFilms;
 };
 
 export const getMostCommentedFilms = (films, filmsCount) => { // Сортировка карточек фильмов по количеству комментариев (модуль: main.js);
-  const sortedFilms = films.slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, filmsCount);
+  const sortedFilms = films.filter((film) => film.comments.length > 0).sort((a, b) => b.comments.length - a.comments.length).slice(0, filmsCount);
 
   return sortedFilms;
 };
